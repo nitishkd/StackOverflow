@@ -19,11 +19,7 @@ S = URLSafeTimedSerializer('dasfegrhrdaUYUHHNJ&@IUJ')
 
 @app.route("/")
 def initialize():
-    return app.send_static_file('login.html')
-
-@app.route("/signup")
-def signup():
-    return app.send_static_file('index.html')
+    return render_template('index.html')
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -36,17 +32,17 @@ def login():
             session['user'] = request.form['username']
             return redirect(url_for('protected'))
 
-    return app.send_static_file('login.html')
+    return render_template('index.html')
 
 @app.route('/protected')
 def protected():
     if g.user:
-        return render_template('protected.html')
+        return render_template('login.html')
 
 @app.route('/logout')
 def logout():
     session.pop('user', None)
-    return app.send_static_file('login.html')
+    return render_template('index.html')
 
 
 @app.before_request
@@ -75,18 +71,16 @@ def register():
         return '<html><body><h1>Registration Successful. Token is {} </h1></body></html>'.format(token)
 
 
-
 @app.route('/confirm/<token>')
 def confirm_mail(token):
     try:
         email = S.loads(token, salt='email-confirm', max_age=3600)
         users.email_confirmation(email) 
-        return app.send_static_file('login.html')
+        return render_template('index.html')
 
     except SignatureExpired:
         return "<h1> Token Expired !<h1>"
 
-    
 
 if __name__ == "__main__":
     print ("starting server")
