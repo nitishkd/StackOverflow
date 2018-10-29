@@ -14,7 +14,7 @@ def initialize():
 
 
 @app.route("/register", methods=['POST'])
-def register():
+def register(): 
     usermail= request.form['usermail']
     username = request.form['username']
     passwd = request.form['passwd']
