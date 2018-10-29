@@ -21,7 +21,7 @@ def addusers(username, alias, usermail, upasswd):
     if checkuserexist(usermail):
         return -1
     else:
-        affected_row = cursor.execute(sql,val)
+        cursor.execute(sql,val)
         database.commit()
         return 1
 
@@ -36,4 +36,10 @@ def getPassword(alias):
         return data[0]
     else:
         return None
-    
+
+def email_confirmation(email):
+    database = mysql.connector.connect(host="localhost",user="root",passwd="helloWORLD@123")
+    cursor = database.cursor()
+    cursor.execute("UPDATE stackoverflow.users SET email_verified = 1 where useremail = %s", (email,))
+    database.commit()
+   

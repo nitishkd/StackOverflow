@@ -6,9 +6,16 @@ import json
 import time
 import users
 import os
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config.from_pyfile('config.cfg')
+
+mail = Mail(app)
+
+S = URLSafeTimedSerializer('dasfegrhrdaUYUHHNJ&@IUJ')
 
 @app.route("/")
 def initialize():
@@ -60,10 +67,29 @@ def register():
     if(resp == -1):
         return '<html><body><h1>Registration failed</h1></body></html>'
     else:
-        return '<html><body><h1>Registration Successful</h1></body></html>'
+        token = S.dumps(usermail, salt='email-confirm')
+        msg = Message('Confirm Email', sender="nkd.2195@gmail.com", recipients=[usermail])
+        link = url_for('confirm_mail', token=token, _external=True)
+        msg.body = 'Your Authentication link is : {}'.format(link)
+        mail.send(msg)
+        return '<html><body><h1>Registration Successful. Token is {} </h1></body></html>'.format(token)
+
+
+
+@app.route('/confirm/<token>')
+def confirm_mail(token):
+    try:
+        email = S.loads(token, salt='email-confirm', max_age=3600)
+        users.email_confirmation(email) 
+        return app.send_static_file('login.html')
+
+    except SignatureExpired:
+        return "<h1> Token Expired !<h1>"
+
     
+
 if __name__ == "__main__":
     print ("starting server")
-    app.run(host="127.0.0.1", port=1234)
+    app.run(host="127.0.0.1", port=1234, debug=True)
     
 

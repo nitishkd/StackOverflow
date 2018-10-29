@@ -10,6 +10,7 @@ CREATE TABLE `stackoverflow`.`users` (
   `userpass` VARCHAR(255) NOT NULL,
   `userrating` INT UNSIGNED NULL,
   `datetime` DATETIME NULL,
+  `email_verified` INT DEFAULT 0,
   PRIMARY KEY (`userid`),
   UNIQUE INDEX `alias_UNIQUE` (`alias` ASC),
   UNIQUE INDEX `useremail_UNIQUE` (`useremail` ASC)
