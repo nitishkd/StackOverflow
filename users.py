@@ -25,3 +25,15 @@ def addusers(username, alias, usermail, upasswd):
         database.commit()
         return 1
 
+def getPassword(alias):
+    database = mysql.connector.connect(host="localhost",user="root",passwd="helloWORLD@123")
+    cursor = database.cursor()
+    cursor.execute("SELECT userpass FROM stackoverflow.users where alias= %s", (alias,))
+    data = cursor.fetchone()
+    print (data[0])
+    number_of_rows=cursor.rowcount
+    if number_of_rows > 0 :
+        return data[0]
+    else:
+        return None
+    
