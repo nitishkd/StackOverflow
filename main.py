@@ -4,6 +4,7 @@ import mysql.connector
 import hashlib
 import json
 import time
+import users
 
 app = Flask(__name__)
 
@@ -20,16 +21,12 @@ def register():
     passwd = request.form['passwd']
     alias = "user" + str(int(time.time()))
     upasswd = hashlib.sha1(passwd.encode()).hexdigest()
+    resp = users.addusers(username, alias, usermail, upasswd)
+    if(resp == -1):
+        return '<html><body><h1>Registration failed</h1></body></html>'
+    else:
+        return '<html><body><h1>Registration Successful</h1></body></html>'
     
-    database = mysql.connector.connect(host="localhost",user="root",passwd="helloWORLD@123")
-    cursor = database.cursor()
-    sql = "INSERT INTO stackoverflow.users (username, alias, useremail, userpass, userrating) VALUES (%s, %s, %s, %s, %s)"
-    val = (username, alias , usermail, upasswd, 0)
-
-    cursor.execute(sql,val)
-    database.commit()
-    database.disconnect()
-
 if __name__ == "__main__":
     print ("starting server")
     app.run(host="127.0.0.1", port=1234)
