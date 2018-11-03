@@ -17,6 +17,9 @@ def initialize():
 def login():
     return render_template('login.html')
 
+@app.route("/addquestion")
+def addques():
+    return render_template('addquestion.html')
 
 @app.route("/register", methods=['POST'])
 def register(): 
