@@ -101,4 +101,25 @@ def que(id):
     posts=db.execute('SELECT * FROM post WHERE qid = ?', (id,)).fetchone()
     ans=db.execute('SELECT * FROM answer WHERE qid = ?', (id,)).fetchall()
     ans_len=len(ans)
-    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len)
+    comments=db.execute('SELECT * FROM comment_question WHERE qid=?',(id,)).fetchall()
+    ans=db.execute('SELECT * FROM answer WHERE qid = ?', (id,)).fetchall()
+    ans_len=len(ans)
+    comments_len=len(comments)
+    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len)
+
+
+@bp.route('/<int:id>/create_comment', methods=('GET', 'POST'))
+@login_required
+def create_comment(id):
+    if request.method == 'POST':
+        body = request.form['body']
+        db = get_db()
+        db.execute(
+                'INSERT INTO comment_question(qid,author_id,body)'
+                ' VALUES (?, ?, ?)',
+                (id,g.user['id'], body)
+            )
+        db.commit()
+        return redirect(url_for('question.que',id=id))
+
+    return render_template('question/create_comment.html')
