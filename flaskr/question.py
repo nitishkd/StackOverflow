@@ -96,7 +96,7 @@ def delete(id):
 
 @bp.route('/<int:id>/que',  methods=('GET','POST'))
 def que(id):
-    get_question(id)
+   # get_question(id)
     db = get_db()
     posts=db.execute('SELECT * FROM post WHERE qid = ?', (id,)).fetchone()
     ans=db.execute('SELECT * FROM answer WHERE qid = ?', (id,)).fetchall()
@@ -123,3 +123,34 @@ def create_comment(id):
         return redirect(url_for('question.que',id=id))
 
     return render_template('question/create_comment.html')
+
+
+@bp.route('/<int:id>/upvote_question', methods=('GET', 'POST'))
+@login_required
+def upvote_question(id):
+        db = get_db()
+        result=db.execute('select * from upvote_que where qid=? and userid=?',(id,g.user['id'])).fetchone()
+        if result is not None:
+            if result[2]==2:
+                db.execute('UPDATE upvote_que SET upvote_downvote=? WHERE qid = ? and userid=?',(1,id,g.user['id']))
+                db.execute('UPDATE post SET upvotes= upvotes + 1 WHERE qid = ?',(id,))
+        else:
+            db.execute('insert into upvote_que(qid,userid,upvote_downvote) values(?,?,?)',(id,g.user['id'],1))          
+            db.execute('UPDATE post SET upvotes=upvotes+1 WHERE qid = ?',(id,))
+        db.commit()
+        return redirect(url_for('question.que',id=id))
+
+@bp.route('/<int:id>/downvote_question', methods=('GET', 'POST'))
+@login_required
+def downvote_question(id):
+        db = get_db()
+        result=db.execute('select * from upvote_que where qid=? and userid=?',(id,g.user['id'])).fetchone()
+        if result is not None:
+            if result[2]==1:
+                db.execute('UPDATE upvote_que SET upvote_downvote=? WHERE qid = ? and userid=?',(2,id,g.user['id']))
+                db.execute('UPDATE post SET upvotes=(upvotes-1) WHERE qid = ?',(id,))
+        else:
+            db.execute('insert into upvote_que(qid,userid,upvote_downvote) values(?,?,?)',(id,g.user['id'],2))
+            db.execute('UPDATE post SET upvotes=(upvotes-1) WHERE qid = ?',(id,))    
+        db.commit()
+        return redirect(url_for('question.que',id=id))

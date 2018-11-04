@@ -12,6 +12,11 @@
         <b>{{posts['title']}}</b>
         <br><br>
         {{posts['body']}}
+        <br><br>
+      {{posts['upvotes']}} Upvotes
+      <br><br>
+      <a class="action" href="{{ url_for('question.upvote_question', id=posts['qid']) }}"> Upvote</a>
+      <a class="action" href="{{ url_for('question.downvote_question', id=posts['qid']) }}"> Downvote</a>
     </article>
     <article>
         <br><br>
@@ -19,6 +24,7 @@
     </article>
     <br><br>
     <a class="action" href="{{ url_for('question.delete', id=posts['qid']) }}"> Answer</a>
+
         {{comments_len}} Comments
         <br><br>
         {% for comm in comments %}

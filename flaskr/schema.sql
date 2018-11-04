@@ -4,7 +4,8 @@ DROP TABLE IF EXISTS answer;
 DROP TABLE IF EXISTS comment_answer;
 DROP TABLE IF EXISTS comment_question;
 DROP TABLE IF EXISTS tags;
-
+DROP TABLE IF EXISTS upvote_que;
+DROP TABLE IF EXISTS upvote_ans;
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
@@ -55,8 +56,16 @@ CREATE TABLE tags (
   tagid INTEGER PRIMARY KEY AUTOINCREMENT,
   tagname VARCHAR(45) NULL
   );
-
-
+CREATE TABLE upvote_que (
+  qid INTEGER NOT NULL,
+  userid INTEGER NOT NULL,
+  upvote_downvote INTEGER NOT NULL
+  );
+CREATE TABLE upvote_ans (
+  id INTEGER NOT NULL,
+  userid INTEGER NOT NULL,
+  upvote_downvote INTEGER NOT NULL
+  );
 
 
 
