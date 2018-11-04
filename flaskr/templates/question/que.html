@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Stackoverflow{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('question.create') }}">New</a>
+  {% endif %}
+  {% endblock %}
+{%block content%}
+  <br>
+    <article class="post">
+        <b>{{posts['title']}}</b>
+        <br><br>
+        {{posts['body']}}
+    </article>
+    <article>
+        <br><br>
+        {{ans_len}} answers.
+    </<article>
+
+      </article>
+    <br><br>
+    <a class="action" href="{{ url_for('question.delete', id=posts['qid']) }}"> Answer</a>
+
+    {% endblock %}
