@@ -6,10 +6,13 @@ DROP TABLE IF EXISTS comment_question;
 DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS upvote_que;
 DROP TABLE IF EXISTS upvote_ans;
+DROP TABLE IF EXISTS qtags;
+
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL
+  password TEXT NOT NULL,
+  reputation INTEGER DEFAULT 0
 );
 
 CREATE TABLE post (
@@ -19,7 +22,6 @@ CREATE TABLE post (
   upvotes INTEGER NULL DEFAULT 0,
   title TEXT NOT NULL,
   body TEXT NOT NULL,
-  tag VARCHAR(255) NOT NULL,
   bestAnswer INTEGER NULL DEFAULT -1,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
@@ -56,6 +58,10 @@ CREATE TABLE tags (
   tagid INTEGER PRIMARY KEY AUTOINCREMENT,
   tagname VARCHAR(45) NULL
   );
+CREATE TABLE qtags (
+  tagname VARCHAR(45),
+  qid INTEGER NOT NULL
+  );
 CREATE TABLE upvote_que (
   qid INTEGER NOT NULL,
   userid INTEGER NOT NULL,
@@ -66,6 +72,8 @@ CREATE TABLE upvote_ans (
   userid INTEGER NOT NULL,
   upvote_downvote INTEGER NOT NULL
   );
+
+
 
 
 

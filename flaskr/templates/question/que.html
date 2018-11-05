@@ -18,6 +18,18 @@
       <a class="action" href="{{ url_for('question.upvote_question', id=posts['qid']) }}"> Upvote</a>
       <a class="action" href="{{ url_for('question.downvote_question', id=posts['qid']) }}"> Downvote</a>
     </article>
+    <br><br>
+    <article class="post">
+      {% for ta in tags %}
+        {{ ta[0]+" " }}
+       
+       {% endfor %}
+  </article>
+    <br><br>
+    {{posts['upvotes']}} Upvotes
+    <br><br>
+    <a class="action" href="{{ url_for('question.upvote_question', id=posts['qid']) }}"> Upvote</a>
+    <a class="action" href="{{ url_for('question.downvote_question', id=posts['qid']) }}"> Downvote</a>
     <article>
         <br><br>
         {{ans_len}} answers.
@@ -37,6 +49,7 @@
         {{ans_len}}answer
         <br>                     
     </article>    
+        <br>    
     <br><br>
     <a class="action" href="{{ url_for('question.delete', id=posts['qid']) }}"> Answer</a>
     <a class="action" href="{{ url_for('question.create_comment', id=posts['qid']) }}"> Comment</a>

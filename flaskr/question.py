@@ -23,8 +23,13 @@ def create():
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
+        tag=request.form['tag']
+        print tag
+        tags=tag.split(',')
+        # s=string(tag)
+        # print s
         error = None
-
+        
         if not title:
             error = 'Title is required.'
 
@@ -33,10 +38,50 @@ def create():
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO post (author_id,title,body,tag)'
-                ' VALUES (?, ?, ?, ?)',
-                ( g.user['id'],title, body,"some_tag")
+                'INSERT INTO post (author_id,title,body)'
+                ' VALUES (?, ?, ?)',
+                ( g.user['id'],title, body)
             )
+            x=db.execute( 'SELECT max(qid) as maximum FROM post').fetchone()
+            data=db.execute("SELECT * FROM user WHERE id = ?", (g.user['id'],)).fetchone()
+            print data
+            flag=0
+            if(data[3]>5):
+                for i in tags:
+                        db.execute(
+                            'INSERT INTO qtags (tagname,qid)'
+                            ' VALUES (?, ?)',
+                            (i,x[0])
+                        )
+                        r=db.execute("SELECT * FROM tags WHERE tagname = ?", (i,)).fetchone()
+                        if(r is None):
+                            db.execute(
+                            'INSERT INTO tags (tagname)'
+                            ' VALUES (?)',
+                            (i)
+                            )
+
+            else:
+                for i in tags:
+                    data=db.execute("SELECT * FROM tags WHERE tagname = ?", (i,)).fetchone()
+                    if(data is None):
+                        flag=1
+                        break
+                    else:
+                        continue
+                if(flag==0):
+                    for i in tags:
+                        db.execute(
+                            'INSERT INTO qtags (tagname,qid)'
+                            ' VALUES (?, ?)',
+                            (i,x[0])
+                        )
+                else:
+                    print "NO REPUTATION TO ADD TAGS"
+
+            # print x['qid']
+            #print x[0]
+            
             db.commit()
             return redirect(url_for('question.index'))
 
@@ -101,11 +146,15 @@ def que(id):
     posts=db.execute('SELECT * FROM post WHERE qid = ?', (id,)).fetchone()
     ans=db.execute('SELECT * FROM answer WHERE qid = ?', (id,)).fetchall()
     ans_len=len(ans)
+    db = get_db()
+    posts=db.execute('SELECT * FROM post WHERE qid = ?', (id,)).fetchone()
+    tags=db.execute('SELECT * FROM qtags where qid=?',(id,)).fetchall()
     comments=db.execute('SELECT * FROM comment_question WHERE qid=?',(id,)).fetchall()
     ans=db.execute('SELECT * FROM answer WHERE qid = ?', (id,)).fetchall()
     ans_len=len(ans)
     comments_len=len(comments)
-    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len)
+    tag_len=len(tags)
+    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len,tags=tags,tag_len=tag_len)
 
 
 @bp.route('/<int:id>/create_comment', methods=('GET', 'POST'))
@@ -140,6 +189,7 @@ def upvote_question(id):
         db.commit()
         return redirect(url_for('question.que',id=id))
 
+
 @bp.route('/<int:id>/downvote_question', methods=('GET', 'POST'))
 @login_required
 def downvote_question(id):
@@ -153,4 +203,4 @@ def downvote_question(id):
             db.execute('insert into upvote_que(qid,userid,upvote_downvote) values(?,?,?)',(id,g.user['id'],2))
             db.execute('UPDATE post SET upvotes=(upvotes-1) WHERE qid = ?',(id,))    
         db.commit()
-        return redirect(url_for('question.que',id=id))
+        return redirect(url_for('question.que',id=id)) 
