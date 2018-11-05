@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Description{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+        <label for="title">Description</label>
+        <label for="body">Body</label>
+        <textarea name="description_body" id="description_body">{{ request.form['description_body'] or user_data['description'] }}</textarea>
+        <input type="submit" value="Save">
+      </form>
+{% endblock %}

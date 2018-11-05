@@ -79,6 +79,40 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
+@bp.route('/<int:id>/profile')
+def profile(id):
+    db = get_db()
+    user =db.execute('SELECT * FROM user where id=?',(id,)).fetchall()
+    return render_template('auth/profile.html',result=user)
+
+@bp.route('/<int:id>/update_profile', methods=('GET', 'POST'))
+def update_profile(id):
+    user=get_user(id)
+    if request.method == 'POST':
+        body = request.form['description_body']
+        error = None
+        if error is not None:
+            flash(error)
+        else:
+            db = get_db()
+            db.execute(
+                'UPDATE user SET description = ?'
+                ' WHERE id = ?',
+                (body, id)
+            )
+            db.commit()
+            return redirect(url_for('auth.profile',id=id))
+    return render_template('auth/update_profile.html',user_data=user)
+
+
+def get_user(id):
+    user = get_db().execute('select * from user where id=?',(id,)).fetchone()
+    if user is None:
+        abort(404, "User id {0} doesn't exist.".format(id))
+    return user
+
+
+
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):

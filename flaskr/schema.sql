@@ -12,6 +12,7 @@ CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
+  description VARCHAR(100) NULL,
   reputation INTEGER DEFAULT 0
 );
 

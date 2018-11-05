@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Profile{% endblock %}</h2>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('question.create') }}">New question</a>
+  {% endif %}
+  {% endblock %}
+{%block content%}
+<br>
+<table align="center" width="50%" height="50%">
+  {% for row in result %}
+      <tr><td>ID:</td><td> {{ row['id'] }}</td></tr>
+      <tr><td>Username:</td><td>{{row['Username']}}</td></tr>
+      <tr><td>Description:</td><td>{{row['description']}}</td><td><a class="action" href="{{ url_for('auth.update_profile',id=g.user['id']) }}">Update</a>
+      </td></tr>
+      <tr><td>Reputation:</td><td>{{row['reputation']}}</td></tr>
+  {% endfor %}
+  </table>
+{% endblock %}

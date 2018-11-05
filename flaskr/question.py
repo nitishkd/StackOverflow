@@ -141,11 +141,7 @@ def delete(id):
 
 @bp.route('/<int:id>/que',  methods=('GET','POST'))
 def que(id):
-   # get_question(id)
     db = get_db()
-    posts=db.execute('SELECT * FROM post WHERE qid = ?', (id,)).fetchone()
-    ans=db.execute('SELECT * FROM answer WHERE qid = ?', (id,)).fetchall()
-    ans_len=len(ans)
     db = get_db()
     posts=db.execute('SELECT * FROM post WHERE qid = ?', (id,)).fetchone()
     tags=db.execute('SELECT * FROM qtags where qid=?',(id,)).fetchall()
@@ -204,3 +200,99 @@ def downvote_question(id):
             db.execute('UPDATE post SET upvotes=(upvotes-1) WHERE qid = ?',(id,))    
         db.commit()
         return redirect(url_for('question.que',id=id)) 
+
+
+@bp.route('/<int:id>/upvote_answer', methods=('GET', 'POST'))
+@login_required
+def upvote_answer(id):
+        db = get_db()
+        result=db.execute('select * from upvote_ans where id=? and userid=?',(id,g.user['id'])).fetchone()
+        if result is not None:
+            if result[2]==2:
+                db.execute('UPDATE upvote_ans SET upvote_downvote=? WHERE id = ? and userid=?',(1,id,g.user['id']))
+                db.execute('UPDATE answer SET upvotes= upvotes + 1 WHERE id = ?',(id,))
+        else:
+            db.execute('insert into upvote_ans(id,userid,upvote_downvote) values(?,?,?)',(id,g.user['id'],1))          
+            db.execute('UPDATE answer SET upvotes=upvotes+1 WHERE id = ?',(id,))
+        res=db.execute('select qid from answer where id=?',(id,)).fetchone()
+        db.commit()
+        return redirect(url_for('question.que',id=res['qid']))
+
+
+@bp.route('/<int:id>/downvote_answer', methods=('GET', 'POST'))
+@login_required
+def downvote_answer(id):
+        db = get_db()
+        result=db.execute('select * from upvote_ans where id=? and userid=?',(id,g.user['id'])).fetchone()
+        if result is not None:
+            if result[2]==1:
+                db.execute('UPDATE upvote_ans SET upvote_downvote=? WHERE id = ? and userid=?',(2,id,g.user['id']))
+                db.execute('UPDATE answer SET upvotes=(upvotes-1) WHERE id = ?',(id,))
+        else:
+            db.execute('insert into upvote_ans(id,userid,upvote_downvote) values(?,?,?)',(id,g.user['id'],2))
+            db.execute('UPDATE answer SET upvotes=(upvotes-1) WHERE id = ?',(id,))    
+        db.commit()
+        res=db.execute('select qid from answer where id=?',(id,)).fetchone()
+        return redirect(url_for('question.que',id=res['qid'])) 
+
+
+@bp.route('/<int:id>/createanswer', methods=('GET', 'POST'))
+@login_required
+def createanswer(id):
+    if request.method == 'POST':
+        body = request.form['body']
+        db = get_db()
+        db.execute(
+            'INSERT INTO answer (qid,author_id,body)'
+            ' VALUES (?, ?, ?)',
+            (id, g.user['id'], body)
+        )
+        db.commit()
+        return redirect(url_for("question.que", id=id))
+
+    return render_template('question/createanswer.html')
+
+def get_answer(id, check_author=True):
+    post = get_db().execute(
+        'SELECT p.id, qid, body, created, author_id, username'
+        ' FROM answer p JOIN user u ON p.author_id = u.id'
+        ' WHERE p.id = ?',
+        (id,)
+    ).fetchone()
+
+    if post is None:
+        abort(404, "Post id {0} doesn't exist.".format(id))
+
+    if check_author and post['author_id'] != g.user['id']:
+        abort(403)
+
+    return post
+
+
+@bp.route('/<int:id>/updateanswer', methods=('GET', 'POST'))
+@login_required
+def updateanswer(id):
+    post = get_answer(id)
+
+    if request.method == 'POST':
+        body = request.form['body']
+        db = get_db()
+        db.execute(
+            'UPDATE answer SET body = ?'
+            ' WHERE id = ?',
+            (body, id)
+        )
+        db.commit()
+        return redirect(url_for('question.que', id=post['qid']))
+
+    return render_template('question/updateanswer.html', post=post)
+
+@bp.route('/<int:id>/deleteanswer', methods=('POST',))
+@login_required
+def deleteanswer(id):
+    q = get_answer(id)
+    db = get_db()
+    db.execute('DELETE FROM answer WHERE id = ?', (id,))
+    db.commit()
+    return redirect(url_for('question.que', id=q['qid']))
+
