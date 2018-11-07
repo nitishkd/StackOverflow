@@ -118,6 +118,7 @@ def update(id):
         title = request.form['title']
         body = request.form['body']
         error = None
+        searchobj = ESsearch.ESearch()
         if not title:
             error = 'Title is required.'
 
@@ -131,6 +132,10 @@ def update(id):
                 (title, body, id)
             )
             db.commit()
+            lastid = int(id)
+            tdata = db.execute("SELECT * from post where qid = ?",(lastid,)).fetchone()
+            searchobj.insert(int(tdata[0]), int(tdata[1]), tdata[2], int(tdata[3]), tdata[4], tdata[5], tdata[6])
+            
             return redirect(url_for('question.index'))
 
     return render_template('question/update.html', post=post)
@@ -155,6 +160,8 @@ def delete(id):
     db = get_db()
     db.execute('DELETE FROM post WHERE qid = ?', (id,))
     db.commit()
+    searchobj = ESsearch.ESearch()
+    searchobj.delete(int(id))
     return redirect(url_for('question.index'))
 
 

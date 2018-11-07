@@ -47,6 +47,10 @@ class ESearch:
             res.append(dic)
         return res
 
+    def delete(self, id):
+        self.ES.delete(index="stackoverflow", doc_type="question",id=id)
+        
+
 if __name__ == "__main__":
     obj = ESearch()
     # obj.insert(1, 1,888,2,"Stackoverflow Question", "does nitish loves to eat watermelon?", "yes he does")
