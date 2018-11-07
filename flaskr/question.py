@@ -5,8 +5,11 @@ from werkzeug.exceptions import abort
 
 from flaskr.auth import login_required
 from flaskr.db import get_db
+import time
+from . import ESsearch
 
 bp = Blueprint('question', __name__)
+
 @bp.route('/')
 def index():
     db=get_db()
@@ -24,12 +27,12 @@ def create():
         title = request.form['title']
         body = request.form['body']
         tag=request.form['tag']
-        print tag
+        #print tag
         tags=tag.split(',')
         # s=string(tag)
         # print s
         error = None
-        
+        searchobj = ESsearch.ESearch()
         if not title:
             error = 'Title is required.'
 
@@ -44,9 +47,12 @@ def create():
             )
             x=db.execute( 'SELECT max(qid) as maximum FROM post').fetchone()
             data=db.execute("SELECT * FROM user WHERE id = ?", (g.user['id'],)).fetchone()
-            print data
+            lastid = int(x[0])
+            tdata = db.execute("SELECT * from post where qid = ?",(lastid,)).fetchone()
+            searchobj.insert(int(tdata[0]), int(tdata[1]), tdata[2], int(tdata[3]), tdata[4], tdata[5], tdata[6])
+            
             flag=0
-            if(data[3]>5):
+            if(data[5]>5):
                 for i in tags:
                         db.execute(
                             'INSERT INTO qtags (tagname,qid)'
@@ -77,7 +83,7 @@ def create():
                             (i,x[0])
                         )
                 else:
-                    print "NO REPUTATION TO ADD TAGS"
+                    print ("NO REPUTATION TO ADD TAGS")
 
             # print x['qid']
             #print x[0]
@@ -142,15 +148,40 @@ def delete(id):
 @bp.route('/<int:id>/que',  methods=('GET','POST'))
 def que(id):
     db = get_db()
-    posts=db.execute('SELECT * FROM post WHERE qid = ?', (id,)).fetchone()
+    db = get_db()
+    posts=db.execute('SELECT qid, title, body, created, author_id, username, upvotes'
+        ' FROM post p JOIN user u ON p.author_id = u.id where qid =?' , (id,)).fetchone()
     tags=db.execute('SELECT * FROM qtags where qid=?',(id,)).fetchall()
     comments=db.execute('SELECT * FROM comment_question WHERE qid=?',(id,)).fetchall()
-    ans=db.execute('SELECT * FROM answer WHERE qid = ?', (id,)).fetchall()
+    ans=db.execute('SELECT * FROM answer a JOIN user u ON a.author_id=u.id WHERE qid = ? ORDER BY upvotes DESC', (id,)).fetchall()
     ans_len=len(ans)
     comments_len=len(comments)
     tag_len=len(tags)
-    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len,tags=tags,tag_len=tag_len)
+    list1={}
+    tag_len=len(tags)
+    for i in ans:
+        # print "hello"
+        # print i['id']
+        # print "temp"
+        ans4=db.execute('SELECT * FROM comment_answer WHERE ans_id=?',(i['id'],)).fetchall()
+        # print len(ans4)
+        list1[i['id']]=ans4
+        # print  len(list1[i['id']])
+    # comments_len_ans=len(ans1)
+    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len,tags=tags,tag_len=tag_len,list1=list1)
 
+@bp.route('/<int:id>/profile', methods=('GET', 'POST'))
+@login_required
+def profile(id):
+     #print "i am here"
+     db = get_db()
+     posts=db.execute('SELECT * FROM post WHERE author_id = ?', (id,)).fetchall()
+     ans1=db.execute('SELECT * FROM answer WHERE author_id = ?', (id,)).fetchall()
+     result=db.execute('SELECT * FROM user WHERE id = ?', (id,)).fetchall()
+     ans=[]
+     for i in ans1:
+           ans.append(db.execute('SELECT * FROM post WHERE qid = ?', (i['qid'],)).fetchone())
+     return render_template('auth/profile.html',result=result,posts=posts,ans=ans)
 
 @bp.route('/<int:id>/create_comment', methods=('GET', 'POST'))
 @login_required
@@ -199,3 +230,115 @@ def downvote_question(id):
             db.execute('UPDATE post SET upvotes=(upvotes-1) WHERE qid = ?',(id,))    
         db.commit()
         return redirect(url_for('question.que',id=id)) 
+
+
+@bp.route('/<int:id>/upvote_answer', methods=('GET', 'POST'))
+@login_required
+def upvote_answer(id):
+        db = get_db()
+        result=db.execute('select * from upvote_ans where id=? and userid=?',(id,g.user['id'])).fetchone()
+        if result is not None:
+            if result[2]==2:
+                db.execute('UPDATE upvote_ans SET upvote_downvote=? WHERE id = ? and userid=?',(1,id,g.user['id']))
+                db.execute('UPDATE answer SET upvotes= upvotes + 1 WHERE id = ?',(id,))
+        else:
+            db.execute('insert into upvote_ans(id,userid,upvote_downvote) values(?,?,?)',(id,g.user['id'],1))          
+            db.execute('UPDATE answer SET upvotes=upvotes+1 WHERE id = ?',(id,))
+        res=db.execute('select qid from answer where id=?',(id,)).fetchone()
+        db.commit()
+        return redirect(url_for('question.que',id=res['qid']))
+
+
+@bp.route('/<int:id>/downvote_answer', methods=('GET', 'POST'))
+@login_required
+def downvote_answer(id):
+        db = get_db()
+        result=db.execute('select * from upvote_ans where id=? and userid=?',(id,g.user['id'])).fetchone()
+        if result is not None:
+            if result[2]==1:
+                db.execute('UPDATE upvote_ans SET upvote_downvote=? WHERE id = ? and userid=?',(2,id,g.user['id']))
+                db.execute('UPDATE answer SET upvotes=(upvotes-1) WHERE id = ?',(id,))
+        else:
+            db.execute('insert into upvote_ans(id,userid,upvote_downvote) values(?,?,?)',(id,g.user['id'],2))
+            db.execute('UPDATE answer SET upvotes=(upvotes-1) WHERE id = ?',(id,))    
+        db.commit()
+        res=db.execute('select qid from answer where id=?',(id,)).fetchone()
+        return redirect(url_for('question.que',id=res['qid'])) 
+
+
+@bp.route('/<int:id>/createanswer', methods=('GET', 'POST'))
+@login_required
+def createanswer(id):
+    if request.method == 'POST':
+        body = request.form['body']
+        db = get_db()
+        db.execute(
+            'INSERT INTO answer (qid,author_id,body)'
+            ' VALUES (?, ?, ?)',
+            (id, g.user['id'], body)
+        )
+        db.commit()
+        return redirect(url_for("question.que", id=id))
+
+    return render_template('question/createanswer.html')
+
+@bp.route('/<int:id>/create_comment_ans', methods=('GET', 'POST'))
+@login_required
+def create_comment_ans(id):
+    if request.method == 'POST':
+        body = request.form['body']
+        db = get_db()
+        db.execute(
+                'INSERT INTO comment_answer(ans_id,author_id,body)'
+                ' VALUES (?, ?, ?)',
+                (id,g.user['id'], body)
+                 )
+        db.commit()
+        return redirect(url_for('question.que',id=1))
+
+    return render_template('question/create_comment_ans.html')
+
+def get_answer(id, check_author=True):
+    post = get_db().execute(
+        'SELECT p.id, qid, body, created, author_id, username'
+        ' FROM answer p JOIN user u ON p.author_id = u.id'
+        ' WHERE p.id = ?',
+        (id,)
+    ).fetchone()
+
+    if post is None:
+        abort(404, "Post id {0} doesn't exist.".format(id))
+
+    if check_author and post['author_id'] != g.user['id']:
+        abort(403)
+
+    return post
+
+
+@bp.route('/<int:id>/updateanswer', methods=('GET', 'POST'))
+@login_required
+def updateanswer(id):
+    post = get_answer(id)
+
+    if request.method == 'POST':
+        body = request.form['body']
+        db = get_db()
+        db.execute(
+            'UPDATE answer SET body = ?'
+            ' WHERE id = ?',
+            (body, id)
+        )
+        db.commit()
+        return redirect(url_for('question.que', id=post['qid']))
+
+    return render_template('question/updateanswer.html', post=post)
+
+@bp.route('/<int:id>/deleteanswer', methods=('POST',))
+@login_required
+def deleteanswer(id):
+    q = get_answer(id)
+    db = get_db()
+    db.execute('DELETE FROM answer WHERE id = ?', (id,))
+    db.commit()
+    return redirect(url_for('question.que', id=q['qid']))
+

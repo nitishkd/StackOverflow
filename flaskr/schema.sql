@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS TempUser;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS answer;
 DROP TABLE IF EXISTS comment_answer;
@@ -11,7 +12,18 @@ DROP TABLE IF EXISTS qtags;
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
+  description VARCHAR(100) NULL,
+  reputation INTEGER DEFAULT 0
+);
+
+CREATE TABLE TempUser (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  description VARCHAR(100) NULL,
   reputation INTEGER DEFAULT 0
 );
 
@@ -25,6 +37,7 @@ CREATE TABLE post (
   bestAnswer INTEGER NULL DEFAULT -1,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
+
 CREATE TABLE answer (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   qid INTEGER  NOT NULL,
@@ -58,22 +71,20 @@ CREATE TABLE tags (
   tagid INTEGER PRIMARY KEY AUTOINCREMENT,
   tagname VARCHAR(45) NULL
   );
+
 CREATE TABLE qtags (
   tagname VARCHAR(45),
   qid INTEGER NOT NULL
   );
+
 CREATE TABLE upvote_que (
   qid INTEGER NOT NULL,
   userid INTEGER NOT NULL,
   upvote_downvote INTEGER NOT NULL
   );
+
 CREATE TABLE upvote_ans (
   id INTEGER NOT NULL,
   userid INTEGER NOT NULL,
   upvote_downvote INTEGER NOT NULL
   );
-
-
-
-
-
