@@ -24,7 +24,7 @@ def create():
         title = request.form['title']
         body = request.form['body']
         tag=request.form['tag']
-        print tag
+        print (tag)
         tags=tag.split(',')
         # s=string(tag)
         # print s
@@ -44,7 +44,7 @@ def create():
             )
             x=db.execute( 'SELECT max(qid) as maximum FROM post').fetchone()
             data=db.execute("SELECT * FROM user WHERE id = ?", (g.user['id'],)).fetchone()
-            print data
+            print (data)
             flag=0
             if(data[3]>5):
                 for i in tags:
@@ -77,7 +77,7 @@ def create():
                             (i,x[0])
                         )
                 else:
-                    print "NO REPUTATION TO ADD TAGS"
+                    print ("NO REPUTATION TO ADD TAGS")
 
             # print x['qid']
             #print x[0]
