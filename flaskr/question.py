@@ -27,7 +27,7 @@ def create():
         title = request.form['title']
         body = request.form['body']
         tag=request.form['tag']
-        print (tag)
+        #print tag
         tags=tag.split(',')
         # s=string(tag)
         # print s
@@ -149,10 +149,11 @@ def delete(id):
 def que(id):
     db = get_db()
     db = get_db()
-    posts=db.execute('SELECT * FROM post WHERE qid = ?', (id,)).fetchone()
+    posts=db.execute('SELECT qid, title, body, created, author_id, username, upvotes'
+        ' FROM post p JOIN user u ON p.author_id = u.id where qid =?' , (id,)).fetchone()
     tags=db.execute('SELECT * FROM qtags where qid=?',(id,)).fetchall()
     comments=db.execute('SELECT * FROM comment_question WHERE qid=?',(id,)).fetchall()
-    ans=db.execute('SELECT * FROM answer WHERE qid = ?', (id,)).fetchall()
+    ans=db.execute('SELECT * FROM answer a JOIN user u ON a.author_id=u.id WHERE qid = ? ORDER BY upvotes DESC', (id,)).fetchall()
     ans_len=len(ans)
     comments_len=len(comments)
     tag_len=len(tags)
