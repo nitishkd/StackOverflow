@@ -81,7 +81,7 @@ def create():
                             'INSERT INTO qtags (tagname,qid)'
                             ' VALUES (?, ?)',
                             (i,x[0])
-                        )
+                            )
                 else:
                     print ("NO REPUTATION TO ADD TAGS")
 
@@ -134,6 +134,18 @@ def update(id):
             return redirect(url_for('question.index'))
 
     return render_template('question/update.html', post=post)
+
+@bp.route('/search', methods=('POST','GET'))
+def search():
+    print(request.method)
+    if request.method == 'POST':
+        pattern = request.form['pattern']
+        searchobj = ESsearch.ESearch()
+        resp = searchobj.search(pattern)
+        print (resp)
+        return render_template('question/index.html', posts=resp)
+    else:
+        return "something wrong happened!"
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required

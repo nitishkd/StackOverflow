@@ -31,13 +31,15 @@ class ESearch:
     def search(self, pattern):
         resp = self.Elsearch(pattern)
         res = []
-        print 
         for item in resp['hits']['hits']:
+            timest = time.strptime(item['_source']['created'], "%Y-%m-%dT%H:%M:%S")
+            tp = time.strftime("%Y-%m-%d %H:%M:%S", timest)
+            print (timest)    
             dic = {}
             dic.update({"score" : item['_score']})
             dic.update({'qid': item['_source']['id']})
             dic.update({'author_id':item['_source']['author_id']})
-            dic.update({"created":item['_source']['created']})
+            dic.update({"created":tp})
             dic.update({"upvotes":item['_source']['upvotes']})
             dic.update({"title":item['_source']['title']})
             dic.update({"body":item['_source']['body']})
