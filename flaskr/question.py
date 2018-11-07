@@ -94,7 +94,7 @@ def create():
                             'INSERT INTO qtags (tagname,qid)'
                             ' VALUES (?, ?)',
                             (i,x[0])
-                        )
+                            )
                 else:
                     print ("NO REPUTATION TO ADD TAGS")
 
@@ -148,6 +148,18 @@ def update(id):
 
     return render_template('question/update.html', post=post)
 
+@bp.route('/search', methods=('POST','GET'))
+def search():
+    print(request.method)
+    if request.method == 'POST':
+        pattern = request.form['pattern']
+        searchobj = ESsearch.ESearch()
+        resp = searchobj.search(pattern)
+        print (resp)
+        return render_template('question/index.html', posts=resp)
+    else:
+        return "something wrong happened!"
+
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
@@ -170,8 +182,31 @@ def que(id):
     ans_len=len(ans)
     comments_len=len(comments)
     tag_len=len(tags)
-    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len,tags=tags,tag_len=tag_len)
+    list1={}
+    tag_len=len(tags)
+    for i in ans:
+        # print "hello"
+        # print i['id']
+        # print "temp"
+        ans4=db.execute('SELECT * FROM comment_answer WHERE ans_id=?',(i['id'],)).fetchall()
+        # print len(ans4)
+        list1[i['id']]=ans4
+        # print  len(list1[i['id']])
+    # comments_len_ans=len(ans1)
+    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len,tags=tags,tag_len=tag_len,list1=list1)
 
+@bp.route('/<int:id>/profile', methods=('GET', 'POST'))
+@login_required
+def profile(id):
+     #print "i am here"
+     db = get_db()
+     posts=db.execute('SELECT * FROM post WHERE author_id = ?', (id,)).fetchall()
+     ans1=db.execute('SELECT * FROM answer WHERE author_id = ?', (id,)).fetchall()
+     result=db.execute('SELECT * FROM user WHERE id = ?', (id,)).fetchall()
+     ans=[]
+     for i in ans1:
+           ans.append(db.execute('SELECT * FROM post WHERE qid = ?', (i['qid'],)).fetchone())
+     return render_template('auth/profile.html',result=result,posts=posts,ans=ans)
 
 @bp.route('/<int:id>/create_comment', methods=('GET', 'POST'))
 @login_required
@@ -271,6 +306,22 @@ def createanswer(id):
         return redirect(url_for("question.que", id=id))
 
     return render_template('question/createanswer.html')
+
+@bp.route('/<int:id>/create_comment_ans', methods=('GET', 'POST'))
+@login_required
+def create_comment_ans(id):
+    if request.method == 'POST':
+        body = request.form['body']
+        db = get_db()
+        db.execute(
+                'INSERT INTO comment_answer(ans_id,author_id,body)'
+                ' VALUES (?, ?, ?)',
+                (id,g.user['id'], body)
+                 )
+        db.commit()
+        return redirect(url_for('question.que',id=1))
+
+    return render_template('question/create_comment_ans.html')
 
 def get_answer(id, check_author=True):
     post = get_db().execute(
