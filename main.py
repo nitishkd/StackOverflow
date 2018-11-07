@@ -64,7 +64,7 @@ def register():
         return '<html><body><h1>Registration failed</h1></body></html>'
     else:
         token = S.dumps(usermail, salt='email-confirm')
-        msg = Message('Confirm Email', sender="nkd.2195@gmail.com", recipients=[usermail])
+        msg = Message('Confirm Email', sender="stackoverflow.iiith@gmail.com", recipients=[usermail])
         link = url_for('confirm_mail', token=token, _external=True)
         msg.body = 'Your Authentication link is : {}'.format(link)
         mail.send(msg)
