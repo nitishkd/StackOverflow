@@ -1,35 +1,40 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h2>{% block title %}Questions{% endblock %}</h2>
-  {% if g.user %}
+  <h2>{% block title %}<h2><b class="blog-header">{{posts['title']}}</b></h2>{% endblock %}</h2>
+  <!-- {% if g.user %}
     <a class="action" href="{{ url_for('question.create') }}">New</a>
-  {% endif %}
+  {% endif %} -->
   {% endblock %}
 {%block content%}
-  <br><hr>
+  <br>
     <article class="post">
-        <p><b>{{posts['title']}}</b></p>
+        <!-- <h2><b class="blog-header">{{posts['title']}}</b></h2> -->
         
-        <p>{{posts['body']}}</p>
+        <p class="blog-post">{{posts['body']}}</p>
         
         {% for ta in tags %}
         {{ ta[0]+" " }}
        
        {% endfor %}
-     <p>{{posts['upvotes']}} Upvotes
-      <a class="action" href="{{ url_for('question.upvote_question', id=posts['qid']) }}"> Upvote</a>
-      <a class="action" href="{{ url_for('question.downvote_question', id=posts['qid']) }}"> Downvote</a></p>
-    </article>
-    <p> {{ans_len}} answers </p>  
-     
-    <p> {{comments_len}}  comments, <a class="action" href="{{ url_for('question.create_comment', id=posts['qid']) }}"> Comment</a></p>
+       <div class="profile-pic" style="text-align: right" >
+          <a href="{{ url_for('auth.profile',id=posts['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
+       <p class="about blog-description" style="text-align: right">by {{ posts['username'] }} on {{ posts['created'].strftime('%Y-%m-%d') }}</p>
+       </div>
+       <p class="blog-post-meta" style="text-align: right">{{posts['upvotes']}} Upvotes</p>
+     <div style="text-align: right">
+      <a class="action" href="{{ url_for('question.upvote_question', id=posts['qid']) }}"><i class="fas fa-angle-up">Upvote</i></a>
+      <a class="action" href="{{ url_for('question.downvote_question', id=posts['qid']) }}"><i class="fas fa-angle-down">Downvote</i></p>
+      </div>
+    </article>     
+    <p style="text-align: right"><a class="action" href="{{ url_for('question.create_comment', id=posts['qid']) }}">add a comment</a></p>
 
      <br>
         {% for comm in comments %}
-        <p style="margin-left:5%;">--{{ comm[3] }}</p>
-       {% endfor %}      
-    <hr>
+        <p style="text-align:right;margin-left:5%; font-style: italic;"><span >{{ comm[3] }}</span></p>
+       {% endfor %}
+       <p class="blog-post-meta"> {{ans_len}} answers </p>       
+    <hr> 
     {% for ans in ans %}
     <article class="ans">
       <header>
@@ -37,13 +42,18 @@
           <p>{{ ans['body'] }}</p>
 
           <div class="about">
-            by {{ ans['author_id'] }} on {{ ans['created'].strftime('%Y-%m-%d') }}
-            <p>{{ans['upvotes']}} Upvotes</p>
+              <div class="profile-pic" style="text-align: right" >
+                  <a href="{{ url_for('auth.profile',id=ans['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
+            <p class="about blog-description" style="text-align: right">by {{ ans['username'] }} on {{ ans['created'].strftime('%Y-%m-%d') }}</p>
+              </div>
+            <p class="blog-post-meta" style="text-align: right">{{ans['upvotes']}} Upvotes</p>
+            <div style="text-align: right">
             {% if g.user['id'] == ans['author_id'] %}
-              <a class="action" href="{{ url_for('question.updateanswer', id=ans['id']) }}">Edit</a>
+              <a class="action" href="{{ url_for('question.updateanswer', id=ans['id']) }}" style="text-align: right"><i class="far fa-edit">Edit</i></a>
             {% endif %}
-            <a class="action" href="{{ url_for('question.upvote_answer', id=ans['id']) }}">Upvote</a>
-            <a class="action" href="{{ url_for('question.downvote_answer', id=ans['id']) }}">Downvote</a>
+            <a class="action" href="{{ url_for('question.upvote_answer', id=ans['id']) }}"><i class="fas fa-angle-up">Upvote</i></a>
+            <a class="action" href="{{ url_for('question.downvote_answer', id=ans['id']) }}"><i class="fas fa-angle-down">Downvote</i></a>
+            </div>
           </div>
         </div>
       </header>
@@ -53,6 +63,6 @@
     {% endif %}
   {% endfor %}
     <hr>
-    <a class="action" href="{{ url_for('question.createanswer', id=posts['qid']) }}"> Answer</a>
+    <a class="action blog-title" href="{{ url_for('question.createanswer', id=posts['qid']) }}"> Add Answer</a>
     {% endblock %}
     qid

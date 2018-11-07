@@ -2,20 +2,36 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
-
+from flask_paginate import Pagination, get_page_args
 from flaskr.auth import login_required
 from flaskr.db import get_db
+import time
+from . import ESsearch
 
 bp = Blueprint('question', __name__)
+
+def get_posts(offset=0, per_page=10,posts=[]):
+    return posts[offset: offset + per_page]
+
 @bp.route('/')
 def index():
+    page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
     db=get_db()
     posts = db.execute(
         'SELECT qid, title, body, created, author_id, username'
         ' FROM post p JOIN user u ON p.author_id = u.id'
         ' ORDER BY created DESC'
     ).fetchall()
-    return render_template('question/index.html', posts=posts)
+    total=len(posts)
+    pagination_posts = get_posts(offset=offset, per_page=per_page,posts=posts)
+    pagination = Pagination(page=page, per_page=per_page, total=total,
+                            css_framework='bootstrap4')
+    return render_template('question/index.html',posts=pagination_posts,
+                                                 page=page,
+                                                 per_page=per_page,
+                                                 pagination=pagination,)
+
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
@@ -24,12 +40,12 @@ def create():
         title = request.form['title']
         body = request.form['body']
         tag=request.form['tag']
-        print tag
+        #print tag
         tags=tag.split(',')
         # s=string(tag)
         # print s
         error = None
-        
+        searchobj = ESsearch.ESearch()
         if not title:
             error = 'Title is required.'
 
@@ -44,9 +60,12 @@ def create():
             )
             x=db.execute( 'SELECT max(qid) as maximum FROM post').fetchone()
             data=db.execute("SELECT * FROM user WHERE id = ?", (g.user['id'],)).fetchone()
-            print data
+            lastid = int(x[0])
+            tdata = db.execute("SELECT * from post where qid = ?",(lastid,)).fetchone()
+            searchobj.insert(int(tdata[0]), int(tdata[1]), tdata[2], int(tdata[3]), tdata[4], tdata[5], tdata[6])
+            
             flag=0
-            if(data[3]>5):
+            if(data[5]>5):
                 for i in tags:
                         db.execute(
                             'INSERT INTO qtags (tagname,qid)'
@@ -77,7 +96,7 @@ def create():
                             (i,x[0])
                         )
                 else:
-                    print "NO REPUTATION TO ADD TAGS"
+                    print ("NO REPUTATION TO ADD TAGS")
 
             # print x['qid']
             #print x[0]
@@ -143,10 +162,11 @@ def delete(id):
 def que(id):
     db = get_db()
     db = get_db()
-    posts=db.execute('SELECT * FROM post WHERE qid = ?', (id,)).fetchone()
+    posts=db.execute('SELECT qid, title, body, created, author_id, username, upvotes'
+        ' FROM post p JOIN user u ON p.author_id = u.id where qid =?' , (id,)).fetchone()
     tags=db.execute('SELECT * FROM qtags where qid=?',(id,)).fetchall()
     comments=db.execute('SELECT * FROM comment_question WHERE qid=?',(id,)).fetchall()
-    ans=db.execute('SELECT * FROM answer WHERE qid = ?', (id,)).fetchall()
+    ans=db.execute('SELECT * FROM answer a JOIN user u ON a.author_id=u.id WHERE qid = ? ORDER BY upvotes DESC', (id,)).fetchall()
     ans_len=len(ans)
     comments_len=len(comments)
     tag_len=len(tags)
