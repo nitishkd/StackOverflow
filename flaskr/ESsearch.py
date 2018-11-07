@@ -1,11 +1,13 @@
 from elasticsearch import Elasticsearch
 import json
+import time
 
 class ESearch:
     def __init__(self):
         self.ES = Elasticsearch([{'host':'localhost','port':9200}])
     
     def insert(self, id, author_id, created, upvotes, title, body, bestAnswer):
+        print ("created: ", created)
         js = {"id":id,
         "author_id":author_id,
         "created":created,
@@ -13,10 +15,8 @@ class ESearch:
         "title":title,
         "body":body,
         "bestAnswer":bestAnswer,}
-
-        print (js)
-        res = self.ES.index(index="stackoverflow", doc_type="question",body=js)
-        print(res)
+        
+        res = self.ES.index(index="stackoverflow", doc_type="question",id=id,body=js)
         
     def Elsearch(self, pattern):
         res = self.ES.search(index="stackoverflow", doc_type="question", body={
