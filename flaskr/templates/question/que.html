@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h2>{% block title %}<h2><b class="blog-header">{{posts['title']}}</b></h2>{% endblock %}</h2>
+  <!-- <h2>{% block title %}{% endblock %}</h2> -->
   <!-- {% if g.user %}
     <a class="action" href="{{ url_for('question.create') }}">New</a>
   {% endif %} -->
@@ -10,7 +10,7 @@
   <br>
     <article class="post">
         <!-- <h2><b class="blog-header">{{posts['title']}}</b></h2> -->
-        
+        <h2><b class="blog-header">{{posts['title']}}</b></h2>
         <p class="blog-post">{{posts['body']}}</p>
         
         {% for ta in tags %}
@@ -63,6 +63,6 @@
     {% endif %}
   {% endfor %}
     <hr>
-    <a class="action blog-title" href="{{ url_for('question.createanswer', id=posts['qid']) }}"> Add Answer</a>
+    <a class="action blog-post-meta" href="{{ url_for('question.createanswer', id=posts['qid']) }}"> Add Answer</a>
     {% endblock %}
     qid
