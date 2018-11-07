@@ -39,7 +39,7 @@
     <article class="ans">
       <header>
         <div>
-          <p class="blog-post">{{ ans['body'] }}</p>
+          <p>{{ ans['body'] }}</p>
 
           <div class="about">
               <div class="profile-pic" style="text-align: right" >
@@ -63,6 +63,6 @@
     {% endif %}
   {% endfor %}
     <hr>
-    <a class="action" href="{{ url_for('question.createanswer', id=posts['qid']) }}">Add Answer</a>
+    <a class="action" href="{{ url_for('question.createanswer', id=posts['qid']) }}"> Answer</a>
     {% endblock %}
-    <hr>
+    qid

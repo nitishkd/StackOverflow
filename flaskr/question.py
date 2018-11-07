@@ -5,8 +5,11 @@ from werkzeug.exceptions import abort
 
 from flaskr.auth import login_required
 from flaskr.db import get_db
+import time
+from . import ESsearch
 
 bp = Blueprint('question', __name__)
+
 @bp.route('/')
 def index():
     db=get_db()
@@ -29,7 +32,7 @@ def create():
         # s=string(tag)
         # print s
         error = None
-        
+        searchobj = ESsearch.ESearch()
         if not title:
             error = 'Title is required.'
 
@@ -44,9 +47,12 @@ def create():
             )
             x=db.execute( 'SELECT max(qid) as maximum FROM post').fetchone()
             data=db.execute("SELECT * FROM user WHERE id = ?", (g.user['id'],)).fetchone()
-            #print data
+            lastid = int(x[0])
+            tdata = db.execute("SELECT * from post where qid = ?",(lastid,)).fetchone()
+            searchobj.insert(int(tdata[0]), int(tdata[1]), tdata[2], int(tdata[3]), tdata[4], tdata[5], tdata[6])
+            
             flag=0
-            if(data[4]>5):
+            if(data[5]>5):
                 for i in tags:
                         db.execute(
                             'INSERT INTO qtags (tagname,qid)'
