@@ -35,6 +35,7 @@
       <header>
         <div>
           <p>{{ ans['body'] }}</p>
+<<<<<<< HEAD
 
           <div class="about">
             by {{ ans['author_id'] }} on {{ ans['created'].strftime('%Y-%m-%d') }}
@@ -46,13 +47,29 @@
             <a class="action" href="{{ url_for('question.downvote_answer', id=ans['id']) }}">Downvote</a>
           </div>
         </div>
+=======
+          <div class="about">by {{ ans['username'] }} on {{ ans['created'].strftime('%Y-%m-%d') }}</div>
+        </div>
+        {% if g.user['id'] == ans['author_id'] %}
+          <a class="action" href="{{ url_for('question.updateanswer', id=ans['id']) }}">Edit</a>
+        {% endif %}
+>>>>>>> master
       </header>
     </article>
     {% if not loop.last %}
       <hr>
     {% endif %}
   {% endfor %}
+<<<<<<< HEAD
     <hr>
     <a class="action" href="{{ url_for('question.createanswer', id=posts['qid']) }}"> Answer</a>
     {% endblock %}
     qid
+=======
+
+    </article>
+
+    <a class="action" href="{{ url_for('question.createanswer', id=posts['qid']) }}"> Answer</a>
+
+    {% endblock %}
+>>>>>>> master

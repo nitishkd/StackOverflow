@@ -49,7 +49,6 @@ CREATE TABLE answer (
   FOREIGN KEY (qid) REFERENCES post (qid)
   
 );
-
 CREATE TABLE comment_answer (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   ans_id INTEGER NOT NULL,
@@ -59,7 +58,6 @@ CREATE TABLE comment_answer (
   FOREIGN KEY (ans_id) REFERENCES answer(id),
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
-
 CREATE TABLE comment_question (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   qid INTEGER NOT NULL,
@@ -69,7 +67,6 @@ CREATE TABLE comment_question (
   FOREIGN KEY (qid) REFERENCES post(qid),
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
-
 CREATE TABLE tags (
   tagid INTEGER PRIMARY KEY AUTOINCREMENT,
   tagname VARCHAR(45) NULL
