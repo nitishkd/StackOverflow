@@ -7,11 +7,11 @@
 {% block content %}
   <form method="post">
     <label for="body">Body</label>
-    <textarea name="body" id="body">{{ request.form['body'] or ans['body'] }}</textarea>
+    <textarea name="body" id="body">{{ request.form['body'] or post['body'] }}</textarea>
     <input type="submit" value="Save">
   </form>
   <hr>
-  <form action="{{ url_for('question.delete', id=post['qid']) }}" method="post">
+  <form action="{{ url_for('question.deleteanswer', id=post['id']) }}" method="post">
     <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
   </form>
 {% endblock %}
