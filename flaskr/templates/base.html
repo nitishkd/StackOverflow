@@ -46,7 +46,7 @@
       <li><a href="{{ url_for('auth.profile',id=g.user['id']) }}">{{ g.user['username'] }}</a>
       <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
     {% else %}
-      <li><a href="{{ url_for('auth.register') }}">Register</a>
+      <li><a href="{{ url_for('register') }}">Register</a>
       <li><a href="{{ url_for('auth.login') }}">Log In</a>
     {% endif %}
   </ul>
@@ -70,14 +70,14 @@
                 <div class="col-3 text-left">
                     <a class="blog-header-logo text-dark" href="{{ url_for('question.index')}}">Stackoverflow</a>
                 </div>
-                <div class="col-3 d-flex justify-content-end align-items-right">
+                <div class="col-4 d-flex justify-content-end align-items-right">
                     <form class="form-inline my-0 my-sm-0">
                          <input class="form-control mr-sm-2" type="search" placeholder="Search..." aria-label="Search">
                         <button class="btn btn-outline-secondary" type="submit">Search</button>
                     </form>
                 </div>
                 {% if g.user %}
-                <div class="col-2 d-flex justify-content-end align-items-right">
+                <div class="col-1 d-flex justify-content-end align-items-right">
                     <form action="/create">
                       <button type="submit" class="btn btn-sm btn-outline-secondary">Add Question</button>
                       </form>
