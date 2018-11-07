@@ -180,7 +180,10 @@ def que(id):
         list1[i['id']]=ans4
         # print  len(list1[i['id']])
     # comments_len_ans=len(ans1)
-    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len,tags=tags,tag_len=tag_len,list1=list1)
+    tag=""
+    for i in range(len(tags)):
+        tag=tag+tags[i]
+    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len,tags=tag,tag_len=tag_len,list1=list1)
 
 @bp.route('/<int:id>/profile', methods=('GET', 'POST'))
 @login_required
@@ -306,7 +309,7 @@ def create_comment_ans(id):
                 (id,g.user['id'], body)
                  )
         db.commit()
-        return redirect(url_for('question.que',id=1))
+        return redirect(url_for('question.que',id=id))
 
     return render_template('question/create_comment_ans.html')
 

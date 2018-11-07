@@ -5,9 +5,11 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <label for="body">Body</label>
-    <textarea name="body" id="body">{{ request.form['body'] }}</textarea>
-    <input type="submit" value="Save">
-  </form>
+<form method="post">
+  <div class="form-group">
+      <label for="body" class="blog-title">Body</label>
+      <textarea class="form-control" id="body" rows="5" name="body">{{ request.form['body'] }}</textarea>
+  </div>
+  <button type="submit" class="btn btn-sm btn-outline-secondary">Save</button>
+</form>
 {% endblock %}
