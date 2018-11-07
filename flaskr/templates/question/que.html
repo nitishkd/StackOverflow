@@ -19,7 +19,7 @@
        {% endfor %}
        <div class="profile-pic" style="text-align: right" >
           <a href="{{ url_for('auth.profile',id=posts['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
-       <p class="about blog-description" style="text-align: right">by {{ posts['username'] }} on {{ posts['created'].strftime('%Y-%m-%d') }}</p>
+       <p class="about blog-description" style="text-align: right">by {{ posts['username'] }} on {{ posts['created']}}</p>
        </div>
        <p class="blog-post-meta" style="text-align: right">{{posts['upvotes']}} Upvotes</p>
      <div style="text-align: right">
@@ -44,7 +44,7 @@
           <div class="about">
               <div class="profile-pic" style="text-align: right" >
                   <a href="{{ url_for('auth.profile',id=ans['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
-            <p class="about blog-description" style="text-align: right">by {{ ans['username'] }} on {{ ans['created'].strftime('%Y-%m-%d') }}</p>
+            <p class="about blog-description" style="text-align: right">by {{ ans['username'] }} on {{ ans['created']}}</p>
               </div>
             <p class="blog-post-meta" style="text-align: right">{{ans['upvotes']}} Upvotes</p>
             <div style="text-align: right">
