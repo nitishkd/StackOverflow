@@ -11,10 +11,10 @@
     <article class="post">
         <!-- <h2><b class="blog-header">{{posts['title']}}</b></h2> -->
         <h2><b class="blog-header">{{posts['title']}}</b></h2>
-        <p class="blog-post" >{{posts['body']}}</p>
-        <div class="form-row">
+        <p class="blog-post-title" >{{posts['body']}}</p>
+        <div class="form-row blog-description">
         {% for ta in tags %}
-        <p class="blog-description" style="text-align: right">{{ ta[0]+" " }}</p>
+        {{ ta[0]+ " " }}
        {% endfor %}
         </div>
        <div class="profile-pic" style="text-align: right" >
@@ -39,7 +39,7 @@
     <article class="ans">
       <header>
         <div>
-          <p>{{ ans['body'] }}</p>
+          <p class="blog-post-title">{{ ans['body'] }}</p>
 
           <div class="about">
               <div class="profile-pic" style="text-align: right" >

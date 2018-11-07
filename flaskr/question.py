@@ -150,6 +150,7 @@ def search():
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
+    print("HI")
     get_question(id)
     db = get_db()
     db.execute('DELETE FROM post WHERE qid = ?', (id,))
@@ -180,10 +181,7 @@ def que(id):
         list1[i['id']]=ans4
         # print  len(list1[i['id']])
     # comments_len_ans=len(ans1)
-    tag=""
-    for i in range(len(tags)):
-        tag=tag+tags[i]
-    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len,tags=tag,tag_len=tag_len,list1=list1)
+    return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len,tags=tags,tag_len=tag_len,list1=list1)
 
 @bp.route('/<int:id>/profile', methods=('GET', 'POST'))
 @login_required
@@ -351,6 +349,7 @@ def updateanswer(id):
 @bp.route('/<int:id>/deleteanswer', methods=('POST',))
 @login_required
 def deleteanswer(id):
+    print (id)
     q = get_answer(id)
     db = get_db()
     db.execute('DELETE FROM answer WHERE id = ?', (id,))
