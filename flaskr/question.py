@@ -131,6 +131,7 @@ def update(id):
         title = request.form['title']
         body = request.form['body']
         error = None
+        searchobj = ESsearch.ESearch()
         if not title:
             error = 'Title is required.'
 
@@ -144,6 +145,10 @@ def update(id):
                 (title, body, id)
             )
             db.commit()
+            lastid = int(id)
+            tdata = db.execute("SELECT * from post where qid = ?",(lastid,)).fetchone()
+            searchobj.insert(int(tdata[0]), int(tdata[1]), tdata[2], int(tdata[3]), tdata[4], tdata[5], tdata[6])
+            
             return redirect(url_for('question.index'))
 
     return render_template('question/update.html', post=post)
@@ -163,10 +168,13 @@ def search():
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
+    print("HI")
     get_question(id)
     db = get_db()
     db.execute('DELETE FROM post WHERE qid = ?', (id,))
     db.commit()
+    searchobj = ESsearch.ESearch()
+    searchobj.delete(int(id))
     return redirect(url_for('question.index'))
 
 
@@ -308,7 +316,7 @@ def create_comment_ans(id):
                 (id,g.user['id'], body)
                  )
         db.commit()
-        return redirect(url_for('question.que',id=1))
+        return redirect(url_for('question.que',id=id))
 
     return render_template('question/create_comment_ans.html')
 
@@ -350,6 +358,7 @@ def updateanswer(id):
 @bp.route('/<int:id>/deleteanswer', methods=('POST',))
 @login_required
 def deleteanswer(id):
+    print (id)
     q = get_answer(id)
     db = get_db()
     db.execute('DELETE FROM answer WHERE id = ?', (id,))

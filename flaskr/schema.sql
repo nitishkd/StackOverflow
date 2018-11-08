@@ -90,3 +90,12 @@ CREATE TABLE upvote_ans (
   userid INTEGER NOT NULL,
   upvote_downvote INTEGER NOT NULL
   );
+
+INSERT INTO tags (tagname) VALUES ("DS");
+INSERT INTO tags (tagname) VALUES ("ALGORITHMS");
+INSERT INTO tags (tagname) VALUES ("FRUITS");
+INSERT INTO tags (tagname) VALUES ("CARS");
+INSERT INTO tags (tagname) VALUES ("BASH");
+INSERT INTO tags (tagname) VALUES ("WEB");
+
+

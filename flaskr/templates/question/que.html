@@ -11,12 +11,12 @@
     <article class="post">
         <!-- <h2><b class="blog-header">{{posts['title']}}</b></h2> -->
         <h2><b class="blog-header">{{posts['title']}}</b></h2>
-        <p class="blog-post">{{posts['body']}}</p>
-        
+        <p class="blog-post-title" >{{posts['body']}}</p>
+        <div class="form-row blog-description">
         {% for ta in tags %}
-        {{ ta[0]+" " }}
-       
+        {{ ta[0]+ " " }}
        {% endfor %}
+        </div>
        <div class="profile-pic" style="text-align: right" >
           <a href="{{ url_for('auth.profile',id=posts['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
        <p class="about blog-description" style="text-align: right">by {{ posts['username'] }} on {{ posts['created']}}</p>
@@ -27,7 +27,7 @@
       <a class="action" href="{{ url_for('question.downvote_question', id=posts['qid']) }}"><i class="fas fa-angle-down">Downvote</i></p>
       </div>
     </article>     
-    <p style="text-align: right"><a class="action" href="{{ url_for('question.create_comment', id=posts['qid']) }}">add a comment</a></p>
+    <p style="text-align: right"><a class="action" href="{{ url_for('question.create_comment', id=posts['qid']) }}">Add comment</a></p>
 
      <br>
         {% for comm in comments %}
@@ -39,7 +39,7 @@
     <article class="ans">
       <header>
         <div>
-          <p>{{ ans['body'] }}</p>
+          <p class="blog-post-title">{{ ans['body'] }}</p>
 
           <div class="about">
               <div class="profile-pic" style="text-align: right" >
@@ -55,12 +55,12 @@
             <a class="action" href="{{ url_for('question.downvote_answer', id=ans['id']) }}"><i class="fas fa-angle-down">Downvote</i></a>
             </div>
             <div>
-              <p> <a class="action" href="{{ url_for('question.create_comment_ans', id=ans['id']) }}"> Comment </a></p>
+              <p style="text-align: right"><a class="action" href="{{ url_for('question.create_comment_ans', id=ans['id']) }}">Add comment </a></p>
 
               <br>
               {% if list1[ans['id']] | length ==0 %}
-                 {%print "5" %}
-                 {%print ans['id'] %}
+                 <!-- {%print "5" %}
+                 {%print ans['id'] %} -->
               {% endif %}
                  {% for comm1 in list1[ans['id']] %}
                  <p style="text-align:right;margin-left:5%; font-style: italic;"><span >{{ comm1['body'] }}</span></p>

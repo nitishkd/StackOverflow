@@ -17,11 +17,11 @@
     <div class="form-group">
         <label for="tag">Tag</label>
         <input type="text" value="" name="tag" data-role="tagsinput" class="form-control">
-    </div>
         <button type="submit" class="btn btn-sm btn-outline-secondary">Save</button>
+        </div>
   </form>
   <hr>
   <form action="{{ url_for('question.delete', id=post['qid']) }}" method="post">
-    <input class=" btn btn-sm btn-outline-secondary danger" type="submit" value="Delete" onClick="return confirm('Are you sure?');">
+    <button class="btn btn-sm btn-outline-secondary danger" type="submit" value="Delete" onClick="return confirm('Are you sure?');">Delete</button>
   </form>
 {% endblock %}
