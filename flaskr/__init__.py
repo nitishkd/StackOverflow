@@ -1,12 +1,18 @@
 import os
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
-
+from werkzeug.utils import secure_filename
 from flask import Flask, request, redirect, render_template,url_for,flash
-
 from werkzeug.security import check_password_hash, generate_password_hash
-
 from flaskr.db import get_db
+
+UPLOAD_FOLDER = '/home/ajay/StackOverflow/flaskr/static/images'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def create_app(test_config=None):
@@ -17,6 +23,7 @@ def create_app(test_config=None):
     )
     app.secret_key = os.urandom(24)
     app.config.from_pyfile('config.cfg')
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
     mail = Mail(app)
 
@@ -40,6 +47,14 @@ def create_app(test_config=None):
             username = request.form['username']
             password = request.form['password']
             email = request.form['email']
+            file =request.files['file']
+            profile_picture=""
+            if file is not None and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                print (profile_picture)
+            else:
+                print("no file received")
             db = get_db()
             error = None
             
@@ -59,8 +74,8 @@ def create_app(test_config=None):
             
             if error is None:
                 db.execute(
-                    'INSERT INTO TempUser (username, password, email) VALUES (?, ?, ?)',
-                    (username, generate_password_hash(password), email)
+                    'INSERT INTO TempUser (username, password, email,profile_picture) VALUES (?, ?, ?, ?)',
+                    (username, generate_password_hash(password), email,profile_picture)
                 )
                 db.commit()
                 token = S.dumps(email, salt='email-confirm')
@@ -83,13 +98,13 @@ def create_app(test_config=None):
             # TODO: move user from TempUser to user
             db=get_db()
             user = db.execute(
-                'SELECT username, password, email FROM TempUser where email = ?',(email,)).fetchall()
+                'SELECT username, password, email,profile_picture FROM TempUser where email = ?',(email,)).fetchall()
             
             print(user[0])
 
             db.execute(
-                    'INSERT INTO user (username, password, email) VALUES (?, ?, ?)',
-                    (user[0][0], user[0][1], user[0][2])
+                    'INSERT INTO user (username, password, email,profile_picture) VALUES (?, ?, ?, ?)',
+                    (user[0][0], user[0][1], user[0][2],user[0][3])
                 )
 
             db.commit()
@@ -109,9 +124,10 @@ def create_app(test_config=None):
 
     from . import auth
     app.register_blueprint(auth.bp)
-
+    
     from . import question
     app.register_blueprint(question.bp)
+    
     app.add_url_rule('/', endpoint='index')
 
     return app

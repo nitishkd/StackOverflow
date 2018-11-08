@@ -20,6 +20,8 @@
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 <title>{% block title %}{% endblock %} - Stackoverflow</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
@@ -35,8 +37,10 @@
     if (e.delegateTarget.activeElement.localName!=="button") {
         e.preventDefault();
     }
+
 })
   </script>
+  <script src="{{ url_for('static', filename='js/stackoverflow.js') }}" ></script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- <nav>
@@ -82,9 +86,10 @@
                       <button type="submit" class="btn btn-sm btn-outline-secondary">Add Question</button>
                       </form>
                 </div>
+                {{session['picture']}} is the path of image
                 <div class="col-3 d-flex justify-content-end align-items-left">
                     <div class="profile-pic">
-                    <a href="{{ url_for('question.profile',id=g.user['id']) }}"><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
+                    <a href="{{ url_for('auth.profile',id=g.user['id']) }}"><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename=g.user['profile_picture'])}}"></a>
                     </div>
                     <form action="/auth/logout">
                     <button type="submit" class="btn btn-sm btn-outline-secondary">Log Out</button>
@@ -142,7 +147,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="/register" method="post">
+                                        <form action="/register" method="post" enctype="multipart/form-data">
                                                 <div class="form-group">
                                                 <label for="username">User Name</label>
                                                 <input type="text" class="form-control" id="username" name="username"
@@ -157,6 +162,10 @@
                                                 <label for="passwd">Password</label>
                                                 <input type="password" class="form-control" id="passwd" name="password"
                                                     placeholder="Password">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pic">Profile Picture</label>
+                                                <input type="file" id="file" name="file">
                                             </div>
                                             <button type="submit" class="btn btn-outline-secondary">Submit</button>
                                         </form>

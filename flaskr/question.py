@@ -195,18 +195,7 @@ def que(id):
     # comments_len_ans=len(ans1)
     return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len,tags=tags,tag_len=tag_len,list1=list1)
 
-@bp.route('/<int:id>/profile', methods=('GET', 'POST'))
-@login_required
-def profile(id):
-     #print "i am here"
-     db = get_db()
-     posts=db.execute('SELECT * FROM post WHERE author_id = ?', (id,)).fetchall()
-     ans1=db.execute('SELECT * FROM answer WHERE author_id = ?', (id,)).fetchall()
-     result=db.execute('SELECT * FROM user WHERE id = ?', (id,)).fetchall()
-     ans=[]
-     for i in ans1:
-           ans.append(db.execute('SELECT * FROM post WHERE qid = ?', (i['qid'],)).fetchone())
-     return render_template('auth/profile.html',result=result,posts=posts,ans=ans)
+
 
 @bp.route('/<int:id>/create_comment', methods=('GET', 'POST'))
 @login_required
