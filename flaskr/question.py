@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
-
+from flask_paginate import Pagination, get_page_args
 from flaskr.auth import login_required
 from flaskr.db import get_db
 import time
@@ -10,15 +10,28 @@ from . import ESsearch
 
 bp = Blueprint('question', __name__)
 
+def get_posts(offset=0, per_page=10,posts=[]):
+    return posts[offset: offset + per_page]
+
 @bp.route('/')
 def index():
+    page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
     db=get_db()
     posts = db.execute(
         'SELECT qid, title, body, created, author_id, username'
         ' FROM post p JOIN user u ON p.author_id = u.id'
         ' ORDER BY created DESC'
     ).fetchall()
-    return render_template('question/index.html', posts=posts)
+    total=len(posts)
+    pagination_posts = get_posts(offset=offset, per_page=per_page,posts=posts)
+    pagination = Pagination(page=page, per_page=per_page, total=total,
+                            css_framework='bootstrap4')
+    return render_template('question/index.html',posts=pagination_posts,
+                                                 page=page,
+                                                 per_page=per_page,
+                                                 pagination=pagination,)
+
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
@@ -190,18 +203,7 @@ def que(id):
     # comments_len_ans=len(ans1)
     return render_template('question/que.html',posts=posts,ans=ans,ans_len=ans_len,comments=comments,comments_len=comments_len,tags=tags,tag_len=tag_len,list1=list1)
 
-@bp.route('/<int:id>/profile', methods=('GET', 'POST'))
-@login_required
-def profile(id):
-     #print "i am here"
-     db = get_db()
-     posts=db.execute('SELECT * FROM post WHERE author_id = ?', (id,)).fetchall()
-     ans1=db.execute('SELECT * FROM answer WHERE author_id = ?', (id,)).fetchall()
-     result=db.execute('SELECT * FROM user WHERE id = ?', (id,)).fetchall()
-     ans=[]
-     for i in ans1:
-           ans.append(db.execute('SELECT * FROM post WHERE qid = ?', (i['qid'],)).fetchone())
-     return render_template('auth/profile.html',result=result,posts=posts,ans=ans)
+
 
 @bp.route('/<int:id>/create_comment', methods=('GET', 'POST'))
 @login_required
