@@ -15,7 +15,8 @@ CREATE TABLE user (
   email TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   description VARCHAR(100) NULL,
-  reputation INTEGER DEFAULT 0
+  reputation INTEGER DEFAULT 0,
+  profile_picture VARCHAR(256) DEFAULT NULL
 );
 
 CREATE TABLE TempUser (
@@ -24,7 +25,8 @@ CREATE TABLE TempUser (
   email TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   description VARCHAR(100) NULL,
-  reputation INTEGER DEFAULT 0
+  reputation INTEGER DEFAULT 0,
+  profile_picture VARCHAR(100) DEFAULT NULL
 );
 
 CREATE TABLE post (

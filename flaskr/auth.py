@@ -32,9 +32,12 @@ def login():
         elif not check_password_hash(user['password'], password):
             error = 'Incorrect password.'
 
-        if error is None:
+        if error is None and user is not None:
             session.clear()
             session['user_id'] = user['id']
+            session['picture']=user['profile_picture']
+            print (session['picture'])
+            print("hello")
             return redirect(url_for('index'))
 
         flash(error)
@@ -60,8 +63,13 @@ def logout():
 @bp.route('/<int:id>/profile')
 def profile(id):
     db = get_db()
-    user =db.execute('SELECT * FROM user where id=?',(id,)).fetchall()
-    return render_template('auth/profile.html',result=user)
+    posts=db.execute('SELECT * FROM post WHERE author_id = ?', (id,)).fetchall()
+    ans1=db.execute('SELECT * FROM answer WHERE author_id = ?', (id,)).fetchall()
+    result=db.execute('SELECT * FROM user WHERE id = ?', (id,)).fetchall()
+    ans=[]
+    for i in ans1:
+        ans.append(db.execute('SELECT * FROM post WHERE qid = ?', (i['qid'],)).fetchone())
+    return render_template('auth/profile.html',result=result,posts=posts,ans=ans)
 
 @bp.route('/<int:id>/update_profile', methods=('GET', 'POST'))
 def update_profile(id):
