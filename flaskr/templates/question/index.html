@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Questions{% endblock %}</h1>
+
+
+  <div class="jumbotron">
+      <h3><b>{% block title %}Questions{% endblock %}</b></h3>
+      <p>Bootstrap is the most popular HTML, CSS...</p> 
+    </div>
   <!-- {% if g.user %}
     <a class="action" href="{{ url_for('question.create') }}">New</a>
   {% endif %} -->

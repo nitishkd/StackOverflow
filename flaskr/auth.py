@@ -1,5 +1,8 @@
+import os
 import functools
 from flask_mail import Mail, Message
+from werkzeug.utils import secure_filename
+
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
 from flask import (
@@ -8,6 +11,9 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from flaskr.db import get_db
+
+UPLOAD_FOLDER='images'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 S = URLSafeTimedSerializer('dasfegrhrdaUYUHHNJ&@IUJ')
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -35,14 +41,20 @@ def login():
         if error is None and user is not None:
             session.clear()
             session['user_id'] = user['id']
-            session['picture']=user['profile_picture']
-            print (session['picture'])
-            print("hello")
+            if user['profile_picture'] is not None:
+                session['picture']=user['profile_picture']
+                print (session['picture'])
+
             return redirect(url_for('index'))
 
         flash(error)
 
     return render_template('auth/login.html')
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS    
 
 @bp.before_app_request
 def load_logged_in_user():
@@ -65,7 +77,7 @@ def profile(id):
     db = get_db()
     posts=db.execute('SELECT * FROM post WHERE author_id = ?', (id,)).fetchall()
     ans1=db.execute('SELECT * FROM answer WHERE author_id = ?', (id,)).fetchall()
-    result=db.execute('SELECT * FROM user WHERE id = ?', (id,)).fetchall()
+    result=db.execute('SELECT * FROM user WHERE id = ?', (id,)).fetchone()
     ans=[]
     for i in ans1:
         ans.append(db.execute('SELECT * FROM post WHERE qid = ?', (i['qid'],)).fetchone())
@@ -74,19 +86,33 @@ def profile(id):
 @bp.route('/<int:id>/update_profile', methods=('GET', 'POST'))
 def update_profile(id):
     user=get_user(id)
-    if request.method == 'POST':
+    profile_picture=None
+    if request.method =='POST':
         body = request.form['description_body']
+        if 'file' in request.files:
+            file =request.files['file']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(os.getcwd()+"/flaskr/static/images/", filename))
+                profile_picture=os.path.join(UPLOAD_FOLDER, filename)
+                print(profile_picture)
+            else:
+                print ("format not allowed")
+        else:
+            print("no file received")
         error = None
         if error is not None:
             flash(error)
         else:
             db = get_db()
             db.execute(
-                'UPDATE user SET description = ?'
+                'UPDATE user SET description = ? ,profile_picture=?'
                 ' WHERE id = ?',
-                (body, id)
+                (body,profile_picture, id)
             )
             db.commit()
+            user=get_user(id)
+            session['picture']=user['profile_picture']
             return redirect(url_for('auth.profile',id=id))
     return render_template('auth/update_profile.html',user_data=user)
 

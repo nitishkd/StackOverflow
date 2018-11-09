@@ -6,7 +6,7 @@ from flask import Flask, request, redirect, render_template,url_for,flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flaskr.db import get_db
 
-UPLOAD_FOLDER = '/home/ajay/StackOverflow/flaskr/static/images'
+UPLOAD_FOLDER='images'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 
@@ -47,12 +47,16 @@ def create_app(test_config=None):
             username = request.form['username']
             password = request.form['password']
             email = request.form['email']
-            file =request.files['file']
-            profile_picture=""
-            if file is not None and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                print (profile_picture)
+            profile_picture=None
+            if 'file' in request.files:
+                file =request.files['file']
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(os.getcwd()+"/flaskr/static/images/", filename))
+                    profile_picture=os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    print(profile_picture)
+                else:
+                    print ("format not allowed")
             else:
                 print("no file received")
             db = get_db()
