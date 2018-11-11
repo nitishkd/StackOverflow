@@ -6,11 +6,7 @@ from flask import Flask, request, redirect, render_template,url_for,flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flaskr.db import get_db
 
-<<<<<<< HEAD
-UPLOAD_FOLDER = os.getcwd() + '/flaskr/static/images/'
-=======
 UPLOAD_FOLDER='images'
->>>>>>> 98cdf9722082a446c6d741a700250b4d447abd33
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 
