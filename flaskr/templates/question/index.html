@@ -21,7 +21,7 @@
         <div>
           <h2><a class="action blog-header" href="{{ url_for('question.que', id=post['qid']) }}"> {{ post['title'] }}</a></h2>
           <div class="profile-pic" style="text-align: right" >
-          <a href="{{ url_for('auth.profile',id=post['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
+          <a href="{{ url_for('auth.profile',id=post['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename=post['profile_picture'])}}"></a>
           <p class="about blog-description" style="text-align: right">by {{ post['username'] }} on {{ post['created'] }}</p>
           </div>
         </div>

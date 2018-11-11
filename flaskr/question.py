@@ -210,11 +210,11 @@ def delete(id):
 def que(id):
     db = get_db()
     db = get_db()
-    posts=db.execute('SELECT qid, title, body, created, author_id, username, upvotes'
+    posts=db.execute('SELECT qid, title, body, created, author_id, username, upvotes, profile_picture'
         ' FROM post p JOIN user u ON p.author_id = u.id where qid =?' , (id,)).fetchone()
     tags=db.execute('SELECT * FROM qtags where qid=?',(id,)).fetchall()
     comments=db.execute('SELECT * FROM comment_question WHERE qid=?',(id,)).fetchall()
-    ans=db.execute('SELECT * FROM answer a JOIN user u ON a.author_id=u.id WHERE qid = ? ORDER BY upvotes DESC', (id,)).fetchall()
+    ans=db.execute('SELECT * FROM answer a JOIN user u ON a.author_id=u.id WHERE qid = ? ORDER BY accepted DESC, upvotes DESC', (id,)).fetchall()
     ans_len=len(ans)
     comments_len=len(comments)
     tag_len=len(tags)
@@ -393,3 +393,13 @@ def deleteanswer(id):
     db.commit()
     return redirect(url_for('question.que', id=q['qid']))
 
+@bp.route('/<int:qid>/<int:aid>/accept_answer', methods=('GET', 'POST'))
+@login_required
+def accept_answer(aid, qid):
+        db = get_db()
+        result=db.execute('select * from post where qid=? and author_id=?',(qid,g.user['id'])).fetchone()
+        if result is not None:
+            db.execute('UPDATE answer SET accepted= 1 WHERE id = ?',(aid,))
+        res=db.execute('select qid from answer where id=?',(aid,)).fetchone()
+        db.commit()
+        return redirect(url_for('question.que',id=res['qid']))
