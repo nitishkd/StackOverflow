@@ -1,6 +1,7 @@
 from elasticsearch import Elasticsearch
 import json
 import time
+from flaskr.db import get_db
 
 class ESearch:
     def __init__(self):
@@ -34,17 +35,23 @@ class ESearch:
         for item in resp['hits']['hits']:
             timest = time.strptime(item['_source']['created'], "%Y-%m-%dT%H:%M:%S")
             tp = time.strftime("%Y-%m-%d %H:%M:%S", timest)
-            print (timest)    
             dic = {}
             dic.update({"score" : item['_score']})
             dic.update({'qid': item['_source']['id']})
             dic.update({'author_id':item['_source']['author_id']})
+            db=get_db()
+            posts = db.execute(
+                'SELECT profile_picture'
+                ' FROM user WHERE id = ?',(item['_source']['author_id'],)
+            ).fetchone()
+            dic.update({"profile_picture":posts[0]})
             dic.update({"created":tp})
             dic.update({"upvotes":item['_source']['upvotes']})
             dic.update({"title":item['_source']['title']})
             dic.update({"body":item['_source']['body']})
             dic.update({"bestAnswer":item['_source']['bestAnswer']})
             res.append(dic)
+        
         return res
 
     def delete(self, id):

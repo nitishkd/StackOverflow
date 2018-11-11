@@ -19,7 +19,7 @@ def index():
                                            per_page_parameter='per_page')
     db=get_db()
     posts = db.execute(
-        'SELECT qid, title, body, created, author_id, username'
+        'SELECT qid, title, body, created, author_id, username,profile_picture'
         ' FROM post p JOIN user u ON p.author_id = u.id'
         ' ORDER BY created DESC'
     ).fetchall()
@@ -157,11 +157,39 @@ def update(id):
 def search():
     print(request.method)
     if request.method == 'POST':
+
+        page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+        db=get_db()    
         pattern = request.form['pattern']
-        searchobj = ESsearch.ESearch()
-        resp = searchobj.search(pattern)
-        print (resp)
-        return render_template('question/index.html', posts=resp)
+        if(pattern[0] == '[' and pattern[len(pattern)-1] == ']'):
+            pattern = pattern[1:(len(pattern)-1)]
+            newpat = ''.join(pattern)
+            tdata = db.execute("SELECT * from qtags where tagname = ?",(newpat,)).fetchall()
+            posts = []
+            for item in tdata:
+                resp = db.execute(
+                    'SELECT qid, title, body, created, author_id, username,profile_picture'
+                    ' FROM post p JOIN user u ON p.author_id = u.id'
+                    ' WHERE p.qid = ?', (int(item[1]),)
+                ).fetchall()
+                for items in resp:
+                    posts.append(items)
+
+        else:
+            searchobj = ESsearch.ESearch()
+            posts = searchobj.search(pattern)
+
+        total=len(posts)    
+        pagination_posts = get_posts(offset=offset, per_page=per_page,posts=posts)
+        pagination = Pagination(page=page, per_page=per_page, total=total,
+                                css_framework='bootstrap4')
+        return render_template('question/index.html',posts=pagination_posts,
+                                                    page=page,
+                                                    per_page=per_page,
+                                                    pagination=pagination,)
+
+
     else:
         return "something wrong happened!"
 
