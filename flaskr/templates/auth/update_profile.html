@@ -1,14 +1,20 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Description{% endblock %}</h1>
+  <h2>{% block title %}Description{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
-<form method="post">
-        <label for="title">Description</label>
-        <label for="body">Body</label>
-        <textarea name="description_body" id="description_body">{{ request.form['description_body'] or user_data['description'] }}</textarea>
-        <button type="submit" class="btn btn-sm btn-outline-secondary">Save</button>
+<form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">Description</label>
+            <label for="body">Body</label>  
+            <textarea class="form-control" rows="4" name="description_body" id="description_body" required class="form-control" >{{ request.form['description_body'] or user_data['description'] }}</textarea>
+        </div>
+        <div class="form-group">  
+            <label for="pic">Profile Picture</label>
+          <input type="file" name="file" id="file">
+        </div> 
+        <button type="submit" class="btn btn-sm btn-outline-secondary">Update</button>
 </form>
 {% endblock %}

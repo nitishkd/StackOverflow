@@ -26,7 +26,7 @@ CREATE TABLE TempUser (
   password TEXT NOT NULL,
   description VARCHAR(100) NULL,
   reputation INTEGER DEFAULT 0,
-  profile_picture VARCHAR(100) DEFAULT NULL
+  profile_picture VARCHAR(266) DEFAULT NULL
 );
 
 CREATE TABLE post (

@@ -6,7 +6,11 @@ from flask import Flask, request, redirect, render_template,url_for,flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flaskr.db import get_db
 
+<<<<<<< HEAD
 UPLOAD_FOLDER = os.getcwd() + '/flaskr/static/images/'
+=======
+UPLOAD_FOLDER='images'
+>>>>>>> 98cdf9722082a446c6d741a700250b4d447abd33
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 
@@ -47,12 +51,25 @@ def create_app(test_config=None):
             username = request.form['username']
             password = request.form['password']
             email = request.form['email']
+<<<<<<< HEAD
             file =request.files['file']
             profile_picture=""
             if file is not None and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 print (profile_picture)
+=======
+            profile_picture=None
+            if 'file' in request.files:
+                file =request.files['file']
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(os.getcwd()+"/flaskr/static/images/", filename))
+                    profile_picture=os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    print(profile_picture)
+                else:
+                    print ("format not allowed")
+>>>>>>> 98cdf9722082a446c6d741a700250b4d447abd33
             else:
                 print("no file received")
             db = get_db()

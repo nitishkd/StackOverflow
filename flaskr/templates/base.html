@@ -87,7 +87,17 @@
                 {{session['picture']}} is the path of image
                 <div class="col-3 d-flex justify-content-end align-items-left">
                     <div class="profile-pic">
+<<<<<<< HEAD
                     <a href="{{ url_for('auth.profile',id=g.user['id']) }}"><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename=g.user['profile_picture'])}}"></a>
+=======
+                        {%if g.user['profile_picture']%}
+                                <a href="{{ url_for('auth.profile',id=g.user['id']) }}">
+                                <img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename=g.user['profile_picture'])}}"></a>
+                        {%else%}
+                                <a href="{{ url_for('auth.profile',id=g.user['id']) }}">
+                                <img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
+                        {%endif%}
+>>>>>>> 98cdf9722082a446c6d741a700250b4d447abd33
                     </div>
                     <form action="/auth/logout">
                     <button type="submit" class="btn btn-sm btn-outline-secondary">Log Out</button>
