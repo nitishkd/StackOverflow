@@ -88,8 +88,8 @@
                       </form>
                 </div>
                 <div class="col-sm-3 d-flex justify-content-end align-items-left">
-                    <div class="profile-pic">
-                        <a href="{{ url_for('auth.profile',id=g.user['id']) }}"><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename=g.user['profile_picture'])}}"></a>
+                    <div class="avatar-area">
+                        <a class="avatar" href="{{ url_for('auth.profile',id=g.user['id']) }}"><img style="height:30px; width:30px;" src="{{ url_for('static', filename=g.user['profile_picture'])}}"></a>
                     </div>
                     <form action="/auth/logout">
                        <button type="submit" class="btn btn-sm btn-outline-secondary">Log Out</button>
@@ -207,7 +207,7 @@
         {% endfor %}
         {% block content %}{% endblock %}
         {% block footer %}<div class="blog-footer">
-                <p>IIITH Stackoverflow by <a href="#" class="text-dark">KugelBlitz</a></p>
+                <p>IIITH Stackoverflow by <a href="{{url_for('question.about')}}" class="text-dark">KugelBlitz</a></p>
                 <p>
                   <a href="#" class="text-dark">Back to top</a>
                 </p>
