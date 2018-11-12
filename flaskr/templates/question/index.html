@@ -22,7 +22,7 @@
                   <div class="single-post post-style-2 post-style-3">
       
                     <div class="blog-info">
-                      <h4 class="title"><a href="{{ url_for('question.que', id=post['id']) }}"><b>{{post['title'] }}</b></a></h4>				
+                      <h4 class="title"><a href="{{ url_for('question.que', id=post['qid']) }}"><b>{{post['title'] }}</b></a></h4>				
       
                       <div class="avatar-area">
                         <a class="avatar" href="{{ url_for('auth.profile',id=post['author_id']) }}"><img src="{{ url_for('static', filename=post['profile_picture'])}}" alt="Profile Image"></a>

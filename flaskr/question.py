@@ -126,7 +126,6 @@ def get_question(id, check_author=True):
 @login_required
 def update(id):
     post = get_question(id)
-
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
@@ -216,7 +215,7 @@ def que(id):
         ' FROM post p JOIN user u ON p.author_id = u.id where qid =?' , (id,)).fetchone()
     tags=db.execute('SELECT * FROM qtags where qid=?',(id,)).fetchall()
     comments=db.execute('SELECT * FROM comment_question WHERE qid=?',(id,)).fetchall()
-    ans=db.execute('SELECT * FROM answer a JOIN user u ON a.author_id=u.id WHERE qid = ? ORDER BY accepted DESC, upvotes DESC', (id,)).fetchall()
+    ans=db.execute('SELECT * FROM answer a JOIN user u ON a.author_id=u.id WHERE qid = ? ORDER BY a.accepted DESC, upvotes DESC', (id,)).fetchall()
     ans_len=len(ans)
     comments_len=len(comments)
     tag_len=len(tags)
@@ -329,6 +328,11 @@ def createanswer(id):
             ' VALUES (?, ?, ?)',
             (id, g.user['id'], body)
         )
+        db.execute(
+            'UPDATE user SET reputation =reputation+1 '
+            ' WHERE id = ?',
+            (g.user['id'],)
+        )        
         db.commit()
         return redirect(url_for("question.que", id=id))
 
