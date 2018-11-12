@@ -3,9 +3,6 @@
 
   <div class="jumbotron">
       <h3>{% block title %}User Profile{% endblock %}</h3>
-      {% if g.user %}
-    <a class="action" style="float:right;" href="{{ url_for('question.create') }}">New question</a>
-  {% endif %}
   </div>
 
   
@@ -73,16 +70,16 @@ th {
 {%block content%}
 <br>
 <table >
-      <tr><td><h4>Username:</h4></td><td><h4>{{result[1]}}</h4></td></td></tr>      
-      <tr><td><h4>Description:</h4></td><td><h4>{{result['description']}}</h4></td>   </tr>
-      <tr><td><h4>Reputation:</h4></td><td><h4>{{result['reputation']}}</h4></td></tr>
+      <tr><td><h4>Username:</h4></td><td style="text-align: right"><h4>{{result[1]}}</h4></td></td></tr>      
+      <tr><td><h4>Description:</h4></td><td style="text-align: right"><h4>{{result['description']}}</h4></td>   </tr>
+      <tr><td><h4>Reputation:</h4></td><td style="text-align: right"><h4>{{result['reputation']}}</h4></td></tr>
 
       <tr><td><h4>Profile Picture</td>
-        <td>
+        <td style="text-align: right">
           {%if g.user['id']==result[0]%}
-                  <img width="80px" height="80px" class="image-fluid" src="{{ url_for('static', filename=g.user['profile_picture'])}}"><h4></td>
+                  <img style="width:30px; height:30px; text-align: right" class="image-fluid" src="{{ url_for('static', filename=g.user['profile_picture'])}}"><h4></td>
           {%else%}
-              <img width="80px" height="80px" class="image-fluid" src="{{ url_for('static', filename=result['profile_picture'])}}">
+              <img style="width:30px; height:30px; text-align:right" class="image-fluid" src="{{ url_for('static', filename=result['profile_picture'])}}">
           {%endif%}
         {%if g.user['id']==result[0]%}
             <tr><td> <h4> <a class="action" href="{{ url_for('auth.update_profile',id=g.user['id']) }}"><h3><b>Update Profile</b></h3></a></h4></td></tr>
