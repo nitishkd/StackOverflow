@@ -47,7 +47,7 @@ def create_app(test_config=None):
             username = request.form['username']
             password = request.form['password']
             email = request.form['email']
-            profile_picture=None
+            profile_picture="images/default.png"
             if 'file' in request.files:
                 file =request.files['file']
                 if file and allowed_file(file.filename):

@@ -32,6 +32,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-tagsinput.css') }}">
 <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/responsive.css') }}" rel="stylesheet">
+<link crossorigin="anonymous" media="all" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
 <script>
     $(document).on('submit', 'form', 'div', function(e) {
     if (e.delegateTarget.activeElement.localName!=="button") {
@@ -88,16 +89,10 @@
                 </div>
                 <div class="col-3 d-flex justify-content-end align-items-left">
                     <div class="profile-pic">
-                        {%if g.user['profile_picture']%}
-                                <a href="{{ url_for('auth.profile',id=g.user['id']) }}">
-                                <img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename=g.user['profile_picture'])}}"></a>
-                        {%else%}
-                                <a href="{{ url_for('auth.profile',id=g.user['id']) }}">
-                                <img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
-                        {%endif%}
+                        <a href="{{ url_for('auth.profile',id=g.user['id']) }}"><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename=g.user['profile_picture'])}}"></a>
                     </div>
                     <form action="/auth/logout">
-                    <button type="submit" class="btn btn-sm btn-outline-secondary">Log Out</button>
+                       <button type="submit" class="btn btn-sm btn-outline-secondary">Log Out</button>
                     </form>
                 </div>
 

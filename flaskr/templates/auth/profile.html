@@ -73,18 +73,14 @@ th {
 {%block content%}
 <br>
 <table >
-      <tr><td><h4>Username:</h4></td><td><h4>{{result[0]}}</h4></td></td></tr>      
+      <tr><td><h4>Username:</h4></td><td><h4>{{result[1]}}</h4></td></td></tr>      
       <tr><td><h4>Description:</h4></td><td><h4>{{result['description']}}</h4></td>   </tr>
       <tr><td><h4>Reputation:</h4></td><td><h4>{{result['reputation']}}</h4></td></tr>
 
       <tr><td><h4>Profile Picture</td>
         <td>
           {%if g.user['id']==result[0]%}
-              {%if g.user['profile_picture']%}
                   <img width="80px" height="80px" class="image-fluid" src="{{ url_for('static', filename=g.user['profile_picture'])}}"><h4></td>
-              {%else%}
-                  <img width="80px" height="80px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"><h4></td>
-              {%endif%}  
           {%else%}
               <img width="80px" height="80px" class="image-fluid" src="{{ url_for('static', filename=result['profile_picture'])}}">
           {%endif%}

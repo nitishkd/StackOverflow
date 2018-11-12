@@ -18,7 +18,7 @@
        {% endfor %}
         </div>
        <div class="profile-pic" style="text-align: right" >
-          <a href="{{ url_for('auth.profile',id=posts['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
+          <a href="{{ url_for('auth.profile',id=posts['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename=posts['profile_picture'])}}"></a>
        <p class="about blog-description" style="text-align: right">by {{ posts['username'] }} on {{ posts['created']}}</p>
        </div>
        <p class="blog-post-meta" style="text-align: right">{{posts['upvotes']}} Upvotes</p>

@@ -10,7 +10,7 @@ from . import ESsearch
 
 bp = Blueprint('question', __name__)
 
-def get_posts(offset=0, per_page=10,posts=[]):
+def get_posts(offset=0, per_page=12,posts=[]):
     return posts[offset: offset + per_page]
 
 @bp.route('/')
@@ -19,7 +19,7 @@ def index():
                                            per_page_parameter='per_page')
     db=get_db()
     posts = db.execute(
-        'SELECT qid, title, body, created, author_id, username'
+        'SELECT *'
         ' FROM post p JOIN user u ON p.author_id = u.id'
         ' ORDER BY created DESC'
     ).fetchall()
@@ -182,7 +182,7 @@ def delete(id):
 def que(id):
     db = get_db()
     db = get_db()
-    posts=db.execute('SELECT qid, title, body, created, author_id, username, upvotes'
+    posts=db.execute('SELECT qid, title, body, created, author_id, username, upvotes,profile_picture'
         ' FROM post p JOIN user u ON p.author_id = u.id where qid =?' , (id,)).fetchone()
     tags=db.execute('SELECT * FROM qtags where qid=?',(id,)).fetchall()
     comments=db.execute('SELECT * FROM comment_question WHERE qid=?',(id,)).fetchall()

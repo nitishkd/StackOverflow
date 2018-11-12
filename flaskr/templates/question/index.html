@@ -3,10 +3,8 @@
 {% block header %}
 
 
-  <div class="jumbotron">
       <h3><b>{% block title %}Questions{% endblock %}</b></h3>
-      <p>Bootstrap is the most popular HTML, CSS...</p> 
-    </div>
+ 
   <!-- {% if g.user %}
     <a class="action" href="{{ url_for('question.create') }}">New</a>
   {% endif %} -->
@@ -14,28 +12,52 @@
 
 {% block content %}
 {{ pagination.links }}
-  {% for post in posts %}
-  <div class="container-fluid">
-    <article class="post">
-      <header>
-        <div>
-          <h2><a class="action blog-header" href="{{ url_for('question.que', id=post['qid']) }}"> {{ post['title'] }}</a></h2>
-          <div class="profile-pic" style="text-align: right" >
-          <a href="{{ url_for('auth.profile',id=post['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
-          <p class="about blog-description" style="text-align: right">by {{ post['username'] }} on {{ post['created'] }}</p>
-          </div>
-        </div>
-        {% if g.user['id'] == post['author_id'] %}
-        <div style="text-align:right">
-          <a class="action" href="{{ url_for('question.update', id=post['qid']) }}"><i class="far fa-edit">Edit</i></a>
-        </div>
-        {% endif %}
-      </header>
-    </article>
-    <!-- {% if not loop.last %} -->
-      <hr>
-  </div>
-    {% endif %}
-  {% endfor %}
+     <section class="blog-area section">
+          <div class="container">
+            <div class="row">
+                {% for post in posts %} 
+              <div class="col-lg-3 col-md-90">
+                <div class="card h-80">
+      
+                  <div class="single-post post-style-2 post-style-3">
+      
+                    <div class="blog-info">
+                      <h4 class="title"><a href="{{ url_for('question.que', id=post['id']) }}"><b>{{post['title'] }}</b></a></h4>				
+      
+                      <div class="avatar-area">
+                        <a class="avatar" href="{{ url_for('auth.profile',id=post['author_id']) }}"><img src="{{ url_for('static', filename=post['profile_picture'])}}" alt="Profile Image"></a>
+                        <div class="right-area">
+                          <label><b>{{ post['username'] }}</b></label>
+                          <h6 class="date">on {{ post['created'] }}</h6>
+                        </div>
+                      </div>
+      
+                      <ul class="post-footer">
+                        <li><a><i class="ion-heart"></i>{{post['upvotes']}}</a></li>
+                        {% if g.user['id'] == post['author_id'] %}
+                          <li><a href="{{ url_for('question.update', id=post['qid']) }}"><i class="ion-android-create"></i>Edit</a></li>
+                        {%else%}
+                          <li><a><i class="ion-android-create"></i>Edit</a></li>
+                        {% endif %}
+                      </ul>
+      
+                    </div><!-- blog-right -->
+      
+                  </div><!-- single-post extra-blog -->
+      
+                </div><!-- card -->
+              </div><!-- col-lg-4 col-md-6 -->
+              {% endfor %}
+
+            </div><!-- row -->
+
+          </div><!-- container -->
+        </section><!-- section -->
+  
+
+
+
+  
+
   {{ pagination.links }}
 {% endblock %}

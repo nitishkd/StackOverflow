@@ -40,10 +40,9 @@ def login():
 
         if error is None and user is not None:
             session.clear()
-            session['user_id'] = user['id']
-            if user['profile_picture'] is not None:
-                session['picture']=user['profile_picture']
-                print (session['picture'])
+            session['user_id']=user['id']
+            session['picture']=user['profile_picture']
+            print (session['picture'])
 
             return redirect(url_for('index'))
 
