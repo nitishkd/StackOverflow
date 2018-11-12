@@ -409,3 +409,7 @@ def accept_answer(aid, qid):
         res=db.execute('select qid from answer where id=?',(aid,)).fetchone()
         db.commit()
         return redirect(url_for('question.que',id=res['qid']))
+
+@bp.route('/about', methods=('POSTS','GET'))
+def about():
+    return render_template("question/about.html")

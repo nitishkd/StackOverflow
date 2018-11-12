@@ -1,32 +1,8 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <!-- <h2>{% block title %}{% endblock %}</h2> -->
-  <!-- {% if g.user %}
-    <a class="action" href="{{ url_for('question.create') }}">New</a>
-  {% endif %} -->
   {% endblock %}
-{%block content%}
-  <!--  <article class="post">
-         <h2><b class="blog-header">{{posts['title']}}</b></h2> 
-        <h2><b class="blog-header">{{posts['title']}}</b></h2>
-        <p class="blog-post-title" >{{posts['body']}}</p>
-        <div class="form-row blog-description">
-        {% for ta in tags %}
-        {{ ta[0]+ " " }}
-       {% endfor %}
-        </div>
-       <div class="profile-pic" style="text-align: right" >
-          <a href="{{ url_for('auth.profile',id=posts['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename=posts['profile_picture'])}}"></a>
-       <p class="about blog-description" style="text-align: right">by {{ posts['username'] }} on {{ posts['created']}}</p>
-       </div>
-       <p class="blog-post-meta" style="text-align: right">{{posts['upvotes']}} Upvotes</p>
-     <div style="text-align: right">
-      <a class="action" href="{{ url_for('question.upvote_question', id=posts['qid']) }}"><i class="fas fa-angle-up text-dark">Upvote</i></a>
-      <a class="action" href="{{ url_for('question.downvote_question', id=posts['qid']) }}"><i class="fas fa-angle-down text-dark">Downvote</i></p>
-      </div>
-    </article>  -->  
-    
+{%block content%}    
 <!-- question area   -->
     <section class="post-area">
         <div class="container">
@@ -214,14 +190,4 @@
       </div><!-- container -->
       
 </section>
-     
-
-
-
-
-
     {% endblock %}
-    {% block footer %}
-{{super()}}
-{% endblock %}
-
