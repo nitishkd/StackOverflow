@@ -206,14 +206,15 @@
           <div class="flash">{{ message }}</div>
         {% endfor %}
         {% block content %}{% endblock %}
-        {% block footer %}<div class="blog-footer">
-                <p>IIITH Stackoverflow by <a href="{{url_for('question.about')}}" class="text-dark">KugelBlitz</a></p>
-                <p>
-                  <a href="#" class="text-dark">Back to top</a>
-                </p>
-              </div>{% endblock %}
+        
       </section>
     </div> 
+    {% block footer %}
+
+            <footer class="navbar navbar-default navbar-fixed-bottom">
+    <p class="text-muted" align="center">IIITH Stackoverflow by <a href="{{url_for('question.about')}}" class="text-dark">KugelBlitz</a></p>
+</footer>
+{% endblock %}
 </body>
 
 </html>
