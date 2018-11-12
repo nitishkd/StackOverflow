@@ -162,33 +162,35 @@ def search():
                                            per_page_parameter='per_page')
         db=get_db()    
         pattern = request.form['pattern']
-        if(pattern[0] == '[' and pattern[len(pattern)-1] == ']'):
-            pattern = pattern[1:(len(pattern)-1)]
-            newpat = ''.join(pattern)
-            tdata = db.execute("SELECT * from qtags where tagname = ?",(newpat,)).fetchall()
-            posts = []
-            for item in tdata:
-                resp = db.execute(
-                    'SELECT qid, title, body, created, author_id, username,profile_picture'
-                    ' FROM post p JOIN user u ON p.author_id = u.id'
-                    ' WHERE p.qid = ?', (int(item[1]),)
-                ).fetchall()
-                for items in resp:
-                    posts.append(items)
+        if len(pattern)>0:
+            if(pattern[0] == '[' and pattern[len(pattern)-1] == ']'):
+                pattern = pattern[1:(len(pattern)-1)]
+                newpat = ''.join(pattern)
+                tdata = db.execute("SELECT * from qtags where tagname = ?",(newpat,)).fetchall()
+                posts = []
+                for item in tdata:
+                    resp = db.execute(
+                        'SELECT qid, title, body, created, author_id, username,profile_picture'
+                        ' FROM post p JOIN user u ON p.author_id = u.id'
+                        ' WHERE p.qid = ?', (int(item[1]),)
+                    ).fetchall()
+                    for items in resp:
+                        posts.append(items)
 
+            else:
+                searchobj = ESsearch.ESearch()
+                posts = searchobj.search(pattern)
+
+            total=len(posts)    
+            pagination_posts = get_posts(offset=offset, per_page=per_page,posts=posts)
+            pagination = Pagination(page=page, per_page=per_page, total=total,
+                                    css_framework='bootstrap4')
+            return render_template('question/index.html',posts=pagination_posts,
+                                                        page=page,
+                                                        per_page=per_page,
+                                                        pagination=pagination,)
         else:
-            searchobj = ESsearch.ESearch()
-            posts = searchobj.search(pattern)
-
-        total=len(posts)    
-        pagination_posts = get_posts(offset=offset, per_page=per_page,posts=posts)
-        pagination = Pagination(page=page, per_page=per_page, total=total,
-                                css_framework='bootstrap4')
-        return render_template('question/index.html',posts=pagination_posts,
-                                                    page=page,
-                                                    per_page=per_page,
-                                                    pagination=pagination,)
-
+            return "Please Enter Something to search!"
 
     else:
         return "something wrong happened!"
