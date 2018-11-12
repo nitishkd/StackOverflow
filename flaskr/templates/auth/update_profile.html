@@ -13,8 +13,11 @@
         </div>
         <div class="form-group">  
             <label for="pic">Profile Picture</label>
-          <input type="file" name="file" id="file">
+          <input class="btn btn-sm btn-outline-secondary" type="file" name="file" id="file">
         </div> 
         <button type="submit" class="btn btn-sm btn-outline-secondary">Update</button>
 </form>
+{% endblock %}
+{% block footer %}
+{{super()}}
 {% endblock %}

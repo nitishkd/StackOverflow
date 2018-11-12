@@ -23,11 +23,11 @@
        </div>
        <p class="blog-post-meta" style="text-align: right">{{posts['upvotes']}} Upvotes</p>
      <div style="text-align: right">
-      <a class="action" href="{{ url_for('question.upvote_question', id=posts['qid']) }}"><i class="fas fa-angle-up">Upvote</i></a>
-      <a class="action" href="{{ url_for('question.downvote_question', id=posts['qid']) }}"><i class="fas fa-angle-down">Downvote</i></p>
+      <a class="action" href="{{ url_for('question.upvote_question', id=posts['qid']) }}"><i class="fas fa-angle-up text-dark">Upvote</i></a>
+      <a class="action" href="{{ url_for('question.downvote_question', id=posts['qid']) }}"><i class="fas fa-angle-down text-dark">Downvote</i></p>
       </div>
     </article>     
-    <p style="text-align: right"><a class="action" href="{{ url_for('question.create_comment', id=posts['qid']) }}">Add comment</a></p>
+    <p style="text-align: right"><a class="action text-dark" href="{{ url_for('question.create_comment', id=posts['qid']) }}">Add comment</a></p>
 
      <br>
         {% for comm in comments %}
@@ -43,19 +43,24 @@
 
           <div class="about">
               <div class="profile-pic" style="text-align: right" >
-                  <a href="{{ url_for('auth.profile',id=ans['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename='images/default.png')}}"></a>
+                  <a href="{{ url_for('auth.profile',id=ans['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename=ans['profile_picture'])}}"></a>
             <p class="about blog-description" style="text-align: right">by {{ ans['username'] }} on {{ ans['created']}}</p>
               </div>
             <p class="blog-post-meta" style="text-align: right">{{ans['upvotes']}} Upvotes</p>
             <div style="text-align: right">
             {% if g.user['id'] == ans['author_id'] %}
-              <a class="action" href="{{ url_for('question.updateanswer', id=ans['id']) }}" style="text-align: right"><i class="far fa-edit">Edit</i></a>
+              <a class="action" href="{{ url_for('question.updateanswer', id=ans['id']) }}" style="text-align: right"><i class="far fa-edit text-dark">Edit</i></a>
             {% endif %}
-            <a class="action" href="{{ url_for('question.upvote_answer', id=ans['id']) }}"><i class="fas fa-angle-up">Upvote</i></a>
-            <a class="action" href="{{ url_for('question.downvote_answer', id=ans['id']) }}"><i class="fas fa-angle-down">Downvote</i></a>
+            <a class="action" href="{{ url_for('question.upvote_answer', id=ans['id']) }}"><i class="fas fa-angle-up text-dark">Upvote</i></a>
+            <a class="action" href="{{ url_for('question.downvote_answer', id=ans['id']) }}"><i class="fas fa-angle-down text-dark">Downvote</i></a>
+            {% if ans['accepted']==1 %}
+            <a class="action" href="{{ url_for('question.accept_answer', aid=ans['id'], qid=posts['qid']) }}"><i class="fas fa-check text-dark">Accepted</i></a>
+            {% else %}
+            <a class="action" href="{{ url_for('question.accept_answer', aid=ans['id'], qid=posts['qid']) }}"><i class="fas fa-check text-dark">Accept</i></a>
+            {% endif %}
             </div>
             <div>
-              <p style="text-align: right"><a class="action" href="{{ url_for('question.create_comment_ans', id=ans['id']) }}">Add comment </a></p>
+              <p style="text-align: right"><a class="action text-dark" href="{{ url_for('question.create_comment_ans', id=ans['id']) }}">Add comment </a></p>
 
               <br>
               {% if list1[ans['id']] | length ==0 %}
@@ -75,7 +80,9 @@
       <hr>
     {% endif %}
   {% endfor %}
-    <hr>
     <a class="action blog-post-meta" href="{{ url_for('question.createanswer', id=posts['qid']) }}"> Add Answer</a>
     {% endblock %}
-    qid
+    {% block footer %}
+{{super()}}
+{% endblock %}
+
