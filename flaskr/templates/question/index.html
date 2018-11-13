@@ -13,11 +13,11 @@
 {% block content %}
 {{ pagination.links }}
      <section class="blog-area section">
-          <div class="container">
+          <!-- <div class="container"> -->
             <div class="row">
                 {% for post in posts %} 
-              <div class="col-sm-3 col-md-3">
-                <div class="card h-80">
+              <div class="col-sm-6 col-md-6">
+                <div class="card" style="width:100%">
       
                   <div class="single-post post-style-2 post-style-3">
       
@@ -51,7 +51,7 @@
 
             </div><!-- row -->
 
-          </div><!-- container -->
+          <!-- </div>container -->
         </section><!-- section -->
   {{ pagination.links }}
 {% endblock %}

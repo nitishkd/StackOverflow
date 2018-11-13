@@ -224,7 +224,7 @@ header .src-area .src-btn{ position: absolute; top: 0; bottom: 0; left: 0; width
 
 .single-post .post-footer{ position: absolute; bottom: 0; left: 0; right: 0; text-align: center; }
 
-.single-post .post-footer > li{ width: 33.33%; display: inline-block; border-right: 1px solid #fff; background: #EDF3F3; }
+.single-post .post-footer > li{ width: 50%; display: inline-block; border-right: 1px solid #fff; background: #EDF3F3; }
 
 .single-post .post-footer > li:first-child{ float: left; }
 
@@ -233,8 +233,6 @@ header .src-area .src-btn{ position: absolute; top: 0; bottom: 0; left: 0; width
 .single-post .post-footer > li > a{ line-height: 45px; width: 100%; }
 
 .single-post .post-footer i{ display: inline-block; margin-right: 10px; opacity: .6; font-size: 1.1em; }
-
-
 
 /* ---------------------------------
 8. POST COMMENT
