@@ -37,6 +37,7 @@ CREATE TABLE post (
   title TEXT NOT NULL,
   body TEXT NOT NULL,
   bestAnswer INTEGER NULL DEFAULT -1,
+  accepted BIT NULL DEFAULT 0,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
 

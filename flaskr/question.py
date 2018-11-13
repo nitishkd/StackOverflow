@@ -434,7 +434,9 @@ def deleteanswer(id):
 def accept_answer(aid, qid):
         db = get_db()
         result=db.execute('select * from post where qid=? and author_id=?',(qid,g.user['id'])).fetchone()
-        if result is not None:
+        res = db.execute('select * from answer where id =?',(aid,)).fetchone()
+        if result is not None  and result['accepted']!=1 and res['author_id']!=g.user['id']:
+            db.execute('UPDATE post SET accepted =1 where qid =?',(qid,))
             db.execute('UPDATE answer SET accepted= 1 WHERE id = ?',(aid,))
         res=db.execute('select qid from answer where id=?',(aid,)).fetchone()
         db.commit()
