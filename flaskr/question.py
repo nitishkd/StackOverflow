@@ -338,19 +338,19 @@ def createanswer(id):
 
     return render_template('question/createanswer.html')
 
-@bp.route('/<int:id>/create_comment_ans', methods=('GET', 'POST'))
+@bp.route('/<int:qid>/<int:aid>/create_comment_ans', methods=('GET', 'POST'))
 @login_required
-def create_comment_ans(id):
+def create_comment_ans(qid,aid):
     if request.method == 'POST':
         body = request.form['body']
         db = get_db()
         db.execute(
                 'INSERT INTO comment_answer(ans_id,author_id,body)'
                 ' VALUES (?, ?, ?)',
-                (id,g.user['id'], body)
+                (aid,g.user['id'], body)
                  )
         db.commit()
-        return redirect(url_for('question.que',id=id))
+        return redirect(url_for('question.que',id=qid))
 
     return render_template('question/create_comment_ans.html')
 

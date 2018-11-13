@@ -147,7 +147,7 @@
                     <li><a>{{ans['upvotes']}}</a>
                     <li><a href="{{ url_for('question.upvote_answer', id=ans['id']) }}""><i class="ion-heart"></i>Upvote</a></li>
                     <li><a href="{{ url_for('question.downvote_answer', id=ans['id']) }}"><i class="ion-heart-broken"></i>Downvote</a></li>
-                    <li class="w3-panel w3-round-xxlarge w3-grey" ><h4><b><a href="{{ url_for('question.create_comment_ans', id=ans['id']) }}"> POST COMMENT</a></b></h4></li>
+                    <li class="w3-panel w3-round-xxlarge w3-grey" ><h4><b><a href="{{ url_for('question.create_comment_ans', qid=posts['qid'], aid=ans['id']) }}"> POST COMMENT</a></b></h4></li>
                     {% if g.user['id'] == ans['author_id'] %}
                     <li><a class="action" href="{{ url_for('question.updateanswer', id=ans['id']) }}"><i class="ion-android-create"></i>Edit</a></li>
                     {% endif %}                  
