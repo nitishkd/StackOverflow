@@ -115,6 +115,9 @@ def update_profile(id):
             return redirect(url_for('auth.profile',id=id))
     return render_template('auth/update_profile.html',user_data=user)
 
+@bp.errorhandler(404)
+def page_not_found(e):
+    return render_template('auth/404.html'), 404
 
 def get_user(id):
     user = get_db().execute('select * from user where id=?',(id,)).fetchone()

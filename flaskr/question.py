@@ -413,3 +413,7 @@ def accept_answer(aid, qid):
 @bp.route('/about', methods=('POSTS','GET'))
 def about():
     return render_template("question/about.html")
+
+@bp.errorhandler(404)
+def page_not_found(e):
+    return render_template('auth/404.html'), 404

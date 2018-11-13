@@ -185,3 +185,13 @@ th {
    width:100%;
    background: aliceblue;
 }
+
+.block-center {
+    box-sizing: border-box;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 65px;
+    width:500px;
+    height:600px;
+}
