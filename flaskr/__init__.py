@@ -122,7 +122,10 @@ def create_app(test_config=None):
         except SignatureExpired:
             return "<h3> Token Expired !<h3>"
 
-
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('auth/404.html'), 404
+    
     from . import db
     db.init_app(app)
 

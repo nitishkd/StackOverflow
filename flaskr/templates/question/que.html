@@ -1,86 +1,194 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <!-- <h2>{% block title %}{% endblock %}</h2> -->
-  <!-- {% if g.user %}
-    <a class="action" href="{{ url_for('question.create') }}">New</a>
-  {% endif %} -->
   {% endblock %}
-{%block content%}
-  <br>
-    <article class="post">
-        <!-- <h2><b class="blog-header">{{posts['title']}}</b></h2> -->
-        <h2><b class="blog-header">{{posts['title']}}</b></h2>
-        <p class="blog-post-title" >{{posts['body']}}</p>
-        <div class="form-row blog-description">
-        {% for ta in tags %}
-        {{ ta[0]+ " " }}
-       {% endfor %}
-        </div>
-       <div class="profile-pic" style="text-align: right" >
-          <a href="{{ url_for('auth.profile',id=posts['author_id']) }}" ><img width="30px" height="30px" class="image-fluid" src="{{ url_for('static', filename=posts['profile_picture'])}}"></a>
-       <p class="about blog-description" style="text-align: right">by {{ posts['username'] }} on {{ posts['created']}}</p>
-       </div>
-       <p class="blog-post-meta" style="text-align: right">{{posts['upvotes']}} Upvotes</p>
-     <div style="text-align: right">
-      <a class="action" href="{{ url_for('question.upvote_question', id=posts['qid']) }}"><i class="fas fa-angle-up">Upvote</i></a>
-      <a class="action" href="{{ url_for('question.downvote_question', id=posts['qid']) }}"><i class="fas fa-angle-down">Downvote</i></p>
-      </div>
-    </article>     
-    <p style="text-align: right"><a class="action" href="{{ url_for('question.create_comment', id=posts['qid']) }}">Add comment</a></p>
+{%block content%}    
+<!-- question area   -->
+    <section class="post-area">
+        <div class="container">
+    
+          <div class="row">
+    
+            <div class="col-lg-1 col-md-0"></div>
+            <div class="col-lg-10 col-md-12">
+    
+              <div class="main-post">
+    
+                <div class="post-top-area">
+                  <h5 class="pre-title">QUESTION</h5>
+    
+                  <h3 class="title"><a href="#"><b>{{posts['title']}} ?</b></a></h3>
+    
+                  <div class="post-info">
+    
+                    <div class="left-area">
+                      <a class="avatar" href="{{ url_for('auth.profile',id=posts['author_id']) }}"><img src="{{ url_for('static', filename=posts['profile_picture'])}}"" alt="Profile Image"></a>
+                    </div>
+    
+                    <div class="middle-area">
+                      <a class="name" href="#"><b>{{ posts['username'] }}</b></a>
+                      <h6 class="date">on {{posts['created']}}</h6>
+                    </div>
+    
+                  </div><!-- post-info -->
+    
+                  <p class="para">
+                      {{posts['body']}}
+                  </p>
+    
+                </div><!-- post-top-area -->
+    
+    
+                <div class="post-bottom-area">
+                  <ul class="tags">
+                    {%for tag in tags%}
+                    <li><a href="#">{{tag[0]}}</a></li>
+                    <li><a href="#">Recommendation</a></li>
 
-     <br>
-        {% for comm in comments %}
-        <p style="text-align:right;margin-left:5%; font-style: italic;"><span >{{ comm[3] }}</span></p>
-       {% endfor %}
-       <p class="blog-post-meta"> {{ans_len}} answers </p>       
-    <hr> 
-    {% for ans in ans %}
-    <article class="ans">
-      <header>
-        <div>
-          <p class="blog-post-title">{{ ans['body'] }}</p>
+                    {%endfor%}
+                  </ul>
+    
+                  <div class="post-icons-area">
+                    <ul class="post-icons">
+                      <li><a>{{posts['upvotes']}}</a>
+                      <li><a href="{{ url_for('question.upvote_question', id=posts['qid']) }}""><i class="ion-heart"></i>Upvote</a></li>
+                      <li><a href="{{ url_for('question.downvote_question', id=posts['qid']) }}"><i class="ion-heart-broken"></i>Downvote</a></li>
+                      <li><a ><i class="ion-chatbubble"></i>{{comments_len}} comments</a></li>
+                      <li><a>{{ans_len}} answers</a></li>
+                      <li class="w3-panel w3-round-xxlarge w3-grey" ><h4><b><a href="{{ url_for('question.create_comment', id=posts['qid']) }}"> POST COMMENT</a></b></h4></li>
+                      <li  class="w3-panel w3-round-xxlarge w3-gray" ><h4><b><a href="{{ url_for('question.createanswer', id=posts['qid']) }}"> ADD ANSWER</a></b></h4></li>
+                    </ul>
+                    <!-- <a class="action blog-post-meta" href="{{ url_for('question.createanswer', id=posts['qid']) }}"> Add Answer</a> -->
 
-          <div class="about">
-              <div class="profile-pic" style="text-align: right" >
-                  <a href="{{ url_for('auth.profile',id=ans['author_id']) }}" ><img width="30px" height="30px" src="{{ url_for('static', filename=ans['profile_picture'])}}"></a>
-            <p class="about blog-description" style="text-align: right">by {{ ans['username'] }} on {{ ans['created']}}</p>
-              </div>
-            <p class="blog-post-meta" style="text-align: right">{{ans['upvotes']}} Upvotes</p>
-            <div style="text-align: right">
-            {% if g.user['id'] == ans['author_id'] %}
-              <a class="action" href="{{ url_for('question.updateanswer', id=ans['id']) }}" style="text-align: right"><i class="far fa-edit">Edit</i></a>
-            {% endif %}
-            <a class="action" href="{{ url_for('question.upvote_answer', id=ans['id']) }}"><i class="fas fa-angle-up">Upvote</i></a>
-            <a class="action" href="{{ url_for('question.downvote_answer', id=ans['id']) }}"><i class="fas fa-angle-down">Downvote</i></a>
-            {% if ans['accepted']==1 %}
-            <a class="action" href="{{ url_for('question.accept_answer', aid=ans['id'], qid=posts['qid']) }}"><i class="fas fa-check">Accepted</i></a>
-            {% else %}
-            <a class="action" href="{{ url_for('question.accept_answer', aid=ans['id'], qid=posts['qid']) }}"><i class="fas fa-check">Accept</i></a>
-            {% endif %}
-            </div>
-            <div>
-              <p style="text-align: right"><a class="action" href="{{ url_for('question.create_comment_ans', id=ans['id']) }}">Add comment </a></p>
 
-              <br>
-              {% if list1[ans['id']] | length ==0 %}
-                 <!-- {%print "5" %}
-                 {%print ans['id'] %} -->
-              {% endif %}
-                 {% for comm1 in list1[ans['id']] %}
-                 <p style="text-align:right;margin-left:5%; font-style: italic;"><span >{{ comm1['body'] }}</span></p>
-                {% endfor %}      
-             <hr>
-          </div>
-          </div>
-        </div>
-      </header>
-    </article>
-    {% if not loop.last %}
-      <hr>
-    {% endif %}
-  {% endfor %}
-    <hr>
-    <a class="action blog-post-meta" href="{{ url_for('question.createanswer', id=posts['qid']) }}"> Add Answer</a>
+                  </div>
+    
+                  <!-- </div>post-info -->
+    
+                </div> <!--post-bottom-area -->
+    
+              </div><!-- main-post -->
+            </div><!-- col-lg-8 col-md-12 -->
+          </div><!-- row -->
+        </div><!-- container -->
+
+        <section class="comment-section center-text">
+            <div class="container">
+              <div class="row">
+        
+                <div class="col-lg-2 col-md-0"></div>
+        
+                <div class="col-lg-8 col-md-12">
+                
+                  <div class="commnets-area text-left">
+                      {% for comm in comments %}
+  
+                        <div class="comment">
+                            <p>{{comm[3]}}</p>
+                        </div>
+                      {% endfor%}
+                  </div><!-- commnets-area -->
+                </div><!-- col-lg-8 col-md-12 -->
+        
+              </div><!-- row -->
+        
+            </div><!-- container -->
+          </section>
+
+
+      </section><!-- post-area -->
+
+     
+
+
+  <!-- Answer area  -->
+
+  <section class="post-area">
+      <h4 style="margin-left: 40%;" class="pre-title"><b></b></h4>
+
+      <div class="container">
+        <div class="row">
+            {% for ans in ans  %}
+          <div class="col-lg-1 col-md-0"></div>
+
+          <div class="col-lg-10 col-md-12">
+  
+            <div class="main-post">
+  
+              <div class="post-top-area">
+                <h5 class="pre-title">ANSWERS</h5>
+
+                <p class="para">
+                    {{ ans['body'] }}
+                </p>
+
+                <div class="post-info">
+  
+                  <div class="left-area">
+                    <a class="avatar" href="{{ url_for('auth.profile',id=ans['author_id']) }}"><img src="{{ url_for('static', filename=ans['profile_picture'])}}"" alt="Profile Image"></a>
+                  </div>
+  
+                  <div class="middle-area">
+                    <a class="name" ><b>{{ ans['username'] }}</b></a>
+                    <h6 class="date">on {{ans['created']}}</h6>
+                  </div>
+  
+                </div><!-- post-info -->
+  
+                
+  
+              </div><!-- post-top-area -->
+  
+  
+              <div class="post-bottom-area">
+  
+                <div class="post-icons-area">
+                  <ul class="post-icons">
+                    <li><a>{{ans['upvotes']}}</a>
+                    <li><a href="{{ url_for('question.upvote_answer', id=ans['id']) }}""><i class="ion-heart"></i>Upvote</a></li>
+                    <li><a href="{{ url_for('question.downvote_answer', id=ans['id']) }}"><i class="ion-heart-broken"></i>Downvote</a></li>
+                    <li class="w3-panel w3-round-xxlarge w3-grey" ><h4><b><a href="{{ url_for('question.create_comment_ans', id=ans['id']) }}"> POST COMMENT</a></b></h4></li>
+                    {% if g.user['id'] == ans['author_id'] %}
+                    <li><a class="action" href="{{ url_for('question.updateanswer', id=ans['id']) }}"><i class="ion-android-create"></i>Edit</a></li>
+                    {% endif %}                  
+                  </ul>
+                </div>
+  
+                </div><!-- post-info -->
+
+          
+
+              </div><!-- post-bottom-area -->
+
+            </div><!-- main-post -->
+
+            <section class="comment-section center-text">
+                <div class="container">
+                  <div class="row">
+            
+                    <div class="col-lg-2 col-md-0"></div>
+            
+                    <div class="col-lg-8 col-md-12">
+                    
+                      <div class="commnets-area text-left">
+                          {% for comm1 in list1[ans['id']] %}
+                        <div class="comment">
+                                <p>{{ comm1['body'] }}</p>     
+                          </div>
+                          {% endfor %} 
+                      </div><!-- commnets-area -->
+                    </div><!-- col-lg-8 col-md-12 -->
+                  </div><!-- row -->
+            
+                </div><!-- container -->
+              </section>
+              {%endfor%}
+          </div><!-- col-lg-8 col-md-12 -->
+        <!-- </div>row -->
+        
+          
+  
+      </div><!-- container -->
+      
+</section>
     {% endblock %}
-    qid
