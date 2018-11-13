@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% block header %}
 
-  <div class="jumbotron">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <h3 style="margin-left: 10px; font-family: Playfair Display">{% block title %}User Profile{% endblock %}</h3>
-  </div>
+  
 
   
   <script>
@@ -13,6 +14,11 @@
   <style type="text/css">
 .tabs {
   overflow: hidden;
+  float: left;
+  margin-left: 30%;
+  margin-top: 3%;
+  width: 50%;
+
   border: 1px solid #ccc;
   background-color: #f1f1f1;
 }
@@ -34,6 +40,10 @@
   background-color: #ccc;
 }
 .tabcontent {
+  float: left;
+  margin-left: 30%;
+  margin-top: 3%;
+  width: 50%;
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-top: none;
@@ -47,45 +57,113 @@
 @keyframes fadeEffect {
     from {opacity: 0;}
     to {opacity: 1;}
-}table {
-    border-collapse: collapse;
+}
+.card {
+    position:absolute;
+    top:60%;
+    float:left;
+    left:20%;
+    transform:translate(-50%,-50%);
+    width:300px;
+    min-height:400px;
+    background:#fff;
+    box-shadow:0 20px 50px rgba(0,0,0,.1);
+    border-radius:10px;
+    transition:0.5s;
+}
+.card:hover {
+    box-shadow:0 30px 70px rgba(0,0,0,.2);
+}
+.card .box {
+    position:absolute;
+    top:50%;
+    left:0;
+    transform:translateY(-50%);
+    text-align:center;
+    padding:20px;
+    box-sizing:border-box;
     width:100%;
-    align-self: center;
 }
-
-th, td {
-    text-align: left;
-    padding: 8px;
+.card .box .img {
+    width:120px;
+    height:120px;
+    margin:0 auto;
+    border-radius:50%;
+    overflow:hidden;
 }
-
-tr:nth-child(even){background-color: #f2f2f2}
-
-th {
-    background-color: #4CAF50;
-    color: white;
+.card .box .img img {
+    width:100%;
+    height:100%;
+}
+.card .box h2 {
+    font-size:20px;
+    color:#262626;
+    margin:20px auto;
+}
+.card .box h2 span {
+    font-size:14px;
+    background:#a09e96;
+    color:#fff;
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:15px;
+}
+.card .box p {
+    color:#262626;
+}
+.card .box span {
+    display:inline-flex;
+}
+.card .box ul {
+    margin:0;
+    padding:0;
+}
+.card .box ul li {
+    list-style:none;
+    float:left;
+}
+.card .box ul li a {
+    display:block;
+    color:#aaa;
+    margin:0 10px;
+    font-size:20px;
+    transition:0.5s;
+    text-align:center;
+}
+.card .box ul li:hover a {
+    color:#e91e63;
+    transform:rotateY(360deg);
 }
 
     </style>
 
   {% endblock %}
 {%block content%}
-<br>
-<table >
-      <tr><td><h4>Username:</h4></td><td style="text-align: right"><h4>{{result[1]}}</h4></td></td></tr>      
-      <tr><td><h4>Description:</h4></td><td style="text-align: right"><h4>{{result['description']}}</h4></td>   </tr>
-      <tr><td><h4>Reputation:</h4></td><td style="text-align: right"><h4>{{result['reputation']}}</h4></td></tr>
-
-      <tr><td><h4>Profile Picture</td>
-        <td style="text-align: right">
+  <div class="card">
+    <div class="box">
+        <div class="img">
           {%if g.user['id']==result[0]%}
-                  <img style="width:30px; height:30px; text-align: right" class="image-fluid" src="{{ url_for('static', filename=g.user['profile_picture'])}}"><h4></td>
+              <img src="{{ url_for('static', filename=g.user['profile_picture'])}}">
           {%else%}
-              <img style="width:30px; height:30px; text-align:right" class="image-fluid" src="{{ url_for('static', filename=result['profile_picture'])}}">
+              <img src="{{ url_for('static', filename=result['profile_picture'])}}">
           {%endif%}
+        </div>
+        <h2>{{result['username']}}<br><span>Reputation: {{result['reputation']}}</span></h2>
+        <p> {{result['description']}}</p>
         {%if g.user['id']==result[0]%}
-            <tr><td> <h4> <a class="action" href="{{ url_for('auth.update_profile',id=g.user['id']) }}"><h3><b>Update Profile</b></h3></a></h4></td></tr>
+            <tr><td> <h4> <a class="action" href="{{ url_for('auth.update_profile',id=g.user['id']) }}"><h6><b>Update Profile</b></h6></a></h4></td></tr>
         {% endif %}
-  </table>
+        <span>
+            <ul>
+                <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                <li><a href="#"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+                <li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+            </ul>
+        </span>
+    </div>
+</div>
 
 
   <div class="tabs">

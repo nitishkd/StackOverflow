@@ -85,7 +85,7 @@ def profile(id):
 @bp.route('/<int:id>/update_profile', methods=('GET', 'POST'))
 def update_profile(id):
     user=get_user(id)
-    profile_picture=None
+    profile_picture=g.user['profile_picture']
     if request.method =='POST':
         body = request.form['description_body']
         if 'file' in request.files:
