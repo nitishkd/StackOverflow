@@ -155,6 +155,36 @@ def update(id):
 @bp.route('/search', methods=('POST','GET'))
 def search():
     print(request.method)
+    if request.method == 'GET':
+        page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+        db=get_db()    
+        pattern = request.args.get('tagname')
+        print(pattern)
+        if len(pattern)>0:
+            newpat = str(pattern)
+            tdata = db.execute("SELECT * from qtags where tagname = ?",(newpat,)).fetchall()
+            posts = []
+            for item in tdata:
+                resp = db.execute(
+                    'SELECT qid, title, body, created, author_id, username,profile_picture'
+                    ' FROM post p JOIN user u ON p.author_id = u.id'
+                    ' WHERE p.qid = ?', (int(item[1]),)
+                ).fetchall()
+                for items in resp:
+                    posts.append(items)
+                        
+            total=len(posts)    
+            pagination_posts = get_posts(offset=offset, per_page=per_page,posts=posts)
+            pagination = Pagination(page=page, per_page=per_page, total=total,
+                                    css_framework='bootstrap4')
+            return render_template('question/index.html',posts=pagination_posts,
+                                                        page=page,
+                                                        per_page=per_page,
+                                                        pagination=pagination,)
+        else:
+            return "Something wrong with the tag name!"
+
     if request.method == 'POST':
 
         page, per_page, offset = get_page_args(page_parameter='page',

@@ -42,9 +42,8 @@
                 <div class="post-bottom-area">
                   <ul class="tags">
                     {%for tag in tags%}
-                    <li><a href="#">{{tag[0]}}</a></li>
-                    <li><a href="#">Recommendation</a></li>
-
+                    <li><a href="{{ url_for('question.search', tagname=tag[0]) }}">{{tag[0]}}</a></li>
+                    <!-- <li><a href="#">Recommendation</a></li> -->
                     {%endfor%}
                   </ul>
     
