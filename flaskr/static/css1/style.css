@@ -23,7 +23,7 @@ a {
 a:hover,
 a:active,
 a:focus {
-  color: #18d36e;
+  color: #18d26e;
   outline: none;
   text-decoration: none;
 }
@@ -136,7 +136,7 @@ h6 {
 }
 
 #header.header-scrolled {
-  background: rgba(0, 0, 0, 0.9);
+  background: #fff;
   padding: 20px 0;
   height: 72px;
   transition: all 0.5s;

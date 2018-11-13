@@ -91,7 +91,7 @@
                 </div>
                 <div class="col-sm-3 d-flex justify-content-end align-items-left">
                     <div class="avatar-area">
-                        <a class="avatar" href="{{ url_for('auth.profile',id=g.user['id']) }}"><img style="height:30px; width:30px;" src="{{ url_for('static', filename=g.user['profile_picture'])}}"></a>
+                        <a class="avatar" href="{{ url_for('auth.profile',id=g.user['id']) }}"><img style="height:30px; width:30px; border-radius:50%" src="{{ url_for('static', filename=g.user['profile_picture'])}}"></a>
                     </div>
                     <form action="/auth/logout">
                        <button type="submit" class="btn btn-sm btn-outline-secondary">Log Out</button>
