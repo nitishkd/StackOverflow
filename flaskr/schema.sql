@@ -93,6 +93,12 @@ CREATE TABLE upvote_ans (
   upvote_downvote INTEGER NOT NULL
   );
 
+CREATE TABLE TagDescription(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tagname VARCHAR(50),
+  describe VARCHAR(2000)
+  );
+
 INSERT INTO tags (tagname) VALUES ("DS");
 INSERT INTO tags (tagname) VALUES ("ALGORITHMS");
 INSERT INTO tags (tagname) VALUES ("FRUITS");
@@ -100,4 +106,9 @@ INSERT INTO tags (tagname) VALUES ("CARS");
 INSERT INTO tags (tagname) VALUES ("BASH");
 INSERT INTO tags (tagname) VALUES ("WEB");
 
-
+INSERT INTO TagDescription (tagname, describe) VALUES ("JAVASCRIPT", "JavaScript (not to be confused with Java) is a high-level, dynamic, multi-paradigm and weakly-typed language used for both client-side and server-side scripting. Its primary use is in rendering and performing manipulation of web pages. Use this tag for questions regarding ECMAScript");
+INSERT INTO TagDescription (tagname, describe) VALUES("DS","This includes data structures questions such as arrays, trees");
+INSERT INTO TagDescription (tagname, describe) VALUES("FRUITS", "Fruits for salad");
+INSERT INTO TagDescription (tagname, describe) VALUES("CARS", "Tags for Cars");
+INSERT INTO TagDescription (tagname, describe) VALUES("BASH", "Bash is a scripting language");
+INSERT INTO TagDescription (tagname, describe) VALUES("WEB", "Questions regarding websites");

@@ -83,13 +83,21 @@
                         <button class="btn btn-outline-secondary" type="submit">Search</button>
                     </form>
                 </div>
+                
+                <div class="col-1 d-flex justify-content-end align-items-left">
+                    <form class="form-inline my-0 my-sm-0" method="get" action="/tags">
+                         <button class="btn btn-outline-secondary" type="submit">Tags</button>
+                    </form>
+                </div>
+                
                 {% if g.user %}
                 <div class="col-sm-1 d-flex justify-content-end align-items-right">
                     <form action="/create">
                       <button type="submit" class="btn btn-sm btn-outline-secondary">Add Question</button>
                       </form>
                 </div>
-                <div class="col-sm-3 d-flex justify-content-end align-items-left">
+
+                <div class="col-sm-2 d-flex justify-content-end align-items-left">
                     <div class="avatar-area">
                         <a class="avatar" href="{{ url_for('auth.profile',id=g.user['id']) }}"><img style="height:30px; width:30px; border-radius:50%" src="{{ url_for('static', filename=g.user['profile_picture'])}}"></a>
                     </div>

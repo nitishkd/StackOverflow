@@ -5,10 +5,14 @@ from werkzeug.utils import secure_filename
 from flask import Flask, request, redirect, render_template,url_for,flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flaskr.db import get_db
+from flask_paginate import Pagination, get_page_args
+
 
 UPLOAD_FOLDER='images'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
+def get_posts(offset=0, per_page=12,posts=[]):
+    return posts[offset: offset + per_page]
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -121,6 +125,23 @@ def create_app(test_config=None):
 
         except SignatureExpired:
             return "<h3> Token Expired !<h3>"
+
+    @app.route('/tags')
+    def get_tags():
+        page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+        db=get_db()
+        tagdata = db.execute('SELECT * from TagDescription').fetchall()
+        
+        posts = tagdata
+        total=len(posts)
+        pagination_posts = get_posts(offset=offset, per_page=per_page,posts=posts)
+        pagination = Pagination(page=page, per_page=per_page, total=total,
+                                css_framework='bootstrap4')
+        return render_template('question/tags.html',posts=pagination_posts,
+                                                    page=page,
+                                                    per_page=per_page,
+                                                    pagination=pagination,)
 
     @app.errorhandler(404)
     def page_not_found(e):
