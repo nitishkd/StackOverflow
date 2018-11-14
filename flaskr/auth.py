@@ -79,7 +79,7 @@ def profile(id):
     result=db.execute('SELECT * FROM user WHERE id = ?', (id,)).fetchone()
     ans=[]
     for i in ans1:
-        ans.append(db.execute('SELECT * FROM post WHERE qid = ?', (i['qid'],)).fetchone())
+        ans.append(db.execute('SELECT * FROM post p JOIN user u ON p.author_id=u.id WHERE qid = ?', (i['qid'],)).fetchone())
     return render_template('auth/profile.html',result=result,posts=posts,ans=ans)
 
 @bp.route('/<int:id>/update_profile', methods=('GET', 'POST'))

@@ -65,7 +65,7 @@ def create():
             searchobj.insert(int(tdata[0]), int(tdata[1]), tdata[2], int(tdata[3]), tdata[4], tdata[5], tdata[6])
             
             flag=0
-            if(data[5]>5):
+            if(data[5]>5) and tags is not None:
                 for i in tags:
                         db.execute(
                             'INSERT INTO qtags (tagname,qid)'
@@ -77,7 +77,7 @@ def create():
                             db.execute(
                             'INSERT INTO tags (tagname)'
                             ' VALUES (?)',
-                            (i)
+                            (i,)
                             )
 
             else:
@@ -436,6 +436,7 @@ def accept_answer(aid, qid):
         result=db.execute('select * from post where qid=? and author_id=?',(qid,g.user['id'])).fetchone()
         res = db.execute('select * from answer where id =?',(aid,)).fetchone()
         if result is not None  and result['accepted']!=1 and res['author_id']!=g.user['id']:
+            db.execute('UPDATE user SET reputation= reputation + 5 where id =?',(res['author_id'],))
             db.execute('UPDATE post SET accepted =1 where qid =?',(qid,))
             db.execute('UPDATE answer SET accepted= 1 WHERE id = ?',(aid,))
         res=db.execute('select qid from answer where id=?',(aid,)).fetchone()

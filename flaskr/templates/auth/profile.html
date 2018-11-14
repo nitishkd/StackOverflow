@@ -167,8 +167,8 @@
 
 
   <div class="tabs">
-      <button class="tablinks"  onclick="open_tab(event, 'questions_asked')">Questions Asked</button>
-      <button class="tablinks" onclick="open_tab(event, 'answers_answered')">Answeres answered</button>
+      <button class="tablinks"  onclick="open_tab(event, 'questions_asked')">Questions asked</button>
+      <button class="tablinks" onclick="open_tab(event, 'answers_answered')">Questions answered</button>
   </div>
     
 
@@ -177,13 +177,13 @@
     <article class="post">
       <header>
         <div>
-          <h3><a class="action" href="{{ url_for('question.que', id=post['qid']) }}"> {{ post['title'] }}</a></h3>
-          <div class="about">Asked on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+          <p style="margin-left: 10px; font-family: Playfair Display"><a class="action" href="{{ url_for('question.que', id=post['qid']) }}"> <strong>{{ post['title'] }}</strong></a></p>
+          <div class="about" style="margin-left: 10px; margin-bottom: 10px; font-size: 13px;">asked on {{ post['created'].strftime('%Y-%m-%d') }}</div>
         </div>
       </header>
     </article>
     {% if not loop.last %}
-      <hr>
+      
     {% endif %}
   {% endfor %}
     </div>
@@ -192,13 +192,12 @@
     <article class="post">
       <header>
         <div>
-          <h3><a class="action" href="{{ url_for('question.que', id=post['qid']) }}"> {{ post['title'] }}</a></h3>
-          <div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+          <p style="margin-left: 10px; font-family: Playfair Display"><a class="action" href="{{ url_for('question.que', id=post['qid']) }}"><strong>{{ post['title'] }}</strong> </a></p>
+          <div class="about" style="margin-left: 10px; margin-bottom: 10px;  font-size: 13px;"> by {{post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
         </div>
       </header>
     </article>
     {% if not loop.last %}
-      <hr>
     {% endif %}
   {% endfor %}
   </div>
