@@ -100,6 +100,7 @@ CREATE TABLE TagDescription(
   );
 
 INSERT INTO tags (tagname) VALUES ("DS");
+INSERT INTO tags (tagname) VALUES ("JAVASCRIPT");
 INSERT INTO tags (tagname) VALUES ("ALGORITHMS");
 INSERT INTO tags (tagname) VALUES ("FRUITS");
 INSERT INTO tags (tagname) VALUES ("CARS");

@@ -79,6 +79,9 @@ def create():
                             ' VALUES (?)',
                             (i,)
                             )
+                            db.execute('INSERT INTO TagDescription (tagname)'
+                            'VALUES (?)',
+                            (i,))
 
             else:
                 for i in tags:
